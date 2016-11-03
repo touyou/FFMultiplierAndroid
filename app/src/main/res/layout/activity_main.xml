@@ -24,21 +24,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="time attack"
-                android:id="@+id/button" android:layout_weight="1"/>
+                android:id="@+id/button" android:layout_weight="1" android:background="@android:color/transparent"/>
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="local score"
-                android:id="@+id/button2" android:layout_weight="1"/>
+                android:id="@+id/button2" android:layout_weight="1" android:background="@android:color/transparent"/>
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="online ranking"
-                android:id="@+id/button3" android:layout_weight="1"/>
+                android:id="@+id/button3" android:layout_weight="1" android:background="@android:color/transparent"/>
         <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="settings"
-                android:id="@+id/button4" android:layout_weight="1"/>
+                android:id="@+id/button4" android:layout_weight="1" android:background="@android:color/transparent"/>
     </LinearLayout>
 </RelativeLayout>
