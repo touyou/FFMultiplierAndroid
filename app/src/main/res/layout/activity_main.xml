@@ -10,8 +10,35 @@
         android:paddingBottom="@dimen/activity_vertical_margin"
         tools:context="com.dev.touyou.ffmultiplier.MainActivity">
 
-    <TextView
-            android:text="Hello World!"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true" android:layout_alignParentStart="true">
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/imageView" android:src="@drawable/key_visual" android:scaleType="fitCenter"
+                android:layout_weight="5"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="time attack"
+                android:id="@+id/button" android:layout_weight="1"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="local score"
+                android:id="@+id/button2" android:layout_weight="1"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="online ranking"
+                android:id="@+id/button3" android:layout_weight="1"/>
+        <Button
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="settings"
+                android:id="@+id/button4" android:layout_weight="1"/>
+    </LinearLayout>
 </RelativeLayout>
