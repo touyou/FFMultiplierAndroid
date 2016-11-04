@@ -3,7 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
@@ -20,25 +20,33 @@
                 android:layout_height="0dp"
                 android:id="@+id/imageView" android:src="@drawable/key_visual" android:scaleType="fitCenter"
                 android:layout_weight="5"/>
-        <Button
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="time attack"
-                android:id="@+id/button" android:layout_weight="1" android:background="@android:color/transparent"/>
-        <Button
+                android:id="@+id/button" android:layout_weight="1" android:background="@android:color/transparent"
+                style="@style/NormalFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="local score"
-                android:id="@+id/button2" android:layout_weight="1" android:background="@android:color/transparent"/>
-        <Button
+                android:id="@+id/button2" android:layout_weight="1" android:background="@android:color/transparent"
+                style="@style/NormalFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="online ranking"
-                android:id="@+id/button3" android:layout_weight="1" android:background="@android:color/transparent"/>
-        <Button
+                android:id="@+id/button3" android:layout_weight="1" android:background="@android:color/transparent"
+                style="@style/NormalFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="settings"
-                android:id="@+id/button4" android:layout_weight="1" android:background="@android:color/transparent"/>
+                android:id="@+id/button4" android:layout_weight="1" android:background="@android:color/transparent"
+                style="@style/NormalFont"
+        />
     </LinearLayout>
 </RelativeLayout>

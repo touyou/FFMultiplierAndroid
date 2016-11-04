@@ -8,4 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SegFont">
+        <item name="font">@string/dseg_font</item>
+    </style>
+
+    <style name="NormalFont">
+        <item name="font">@string/futura_font</item>
+    </style>
+
+    <style name="NormalFont.Bold">
+        <item name="font">@string/futurabold_font</item>
+    </style>
 </resources>

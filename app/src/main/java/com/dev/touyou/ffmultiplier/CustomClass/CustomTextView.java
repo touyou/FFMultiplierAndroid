@@ -11,7 +11,7 @@ import com.dev.touyou.ffmultiplier.R;
  * Created by touyou on 2016/11/03.
  */
 public class CustomTextView extends TextView {
-    private String mFont = "DSEG7ClassicMini-Bold.ttf";
+    private String mFont = "FuturaExtended.ttf";
 
     public CustomTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
