@@ -1,7 +1,8 @@
-package com.dev.touyou.ffmultiplier;
+package com.dev.touyou.ffmultiplier.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import com.dev.touyou.ffmultiplier.R;
 import com.google.android.gms.ads.MobileAds;
 
 public class MainActivity extends AppCompatActivity {
