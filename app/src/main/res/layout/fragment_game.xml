@@ -6,20 +6,174 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="cancel"
+                android:id="@+id/button23"/>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="60"
+                android:id="@+id/textView5" android:gravity="center"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp" android:layout_weight="3" android:gravity="center">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="F"
+                android:id="@+id/textView2" android:layout_weight="1" android:gravity="center" android:textSize="60sp"/>
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="×"
+                android:id="@+id/textView3" android:layout_weight="1" android:gravity="center" android:textSize="40sp"/>
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="F"
+                android:id="@+id/textView4" android:layout_weight="1" android:gravity="center" android:textSize="60sp"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp" android:layout_weight="1" android:gravity="center">
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="delete"
+                android:id="@+id/button21" android:layout_weight="1" android:background="#111111"
+                android:textColor="#ffffff" android:textSize="20sp"/>
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="0"
+                android:id="@+id/textView" android:layout_weight="1" android:gravity="center" android:textSize="20sp"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="done"
+                android:id="@+id/button22" android:layout_weight="1" android:background="#111111"
+                android:textColor="#ffffff" android:textSize="20sp"/>
     </LinearLayout>
     <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:columnCount="4" android:rowCount="4">
+            android:layout_height="0dp" android:columnCount="4" android:rowCount="4" android:layout_weight="4">
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="1"
+                android:id="@+id/button5" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="2"
+                android:id="@+id/button6" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="3"
+                android:id="@+id/button7" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="4"
+                android:id="@+id/button8" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="5"
+                android:id="@+id/button9" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="6"
+                android:id="@+id/button10" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="7"
+                android:id="@+id/button11" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="8"
+                android:id="@+id/button12" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="9"
+                android:id="@+id/button13" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="A"
+                android:id="@+id/button14" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="B"
+                android:id="@+id/button15" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="C"
+                android:id="@+id/button16" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="D"
+                android:id="@+id/button17" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="E"
+                android:id="@+id/button18" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="F"
+                android:id="@+id/button19" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="G"
+                android:id="@+id/button20" android:layout_rowWeight="1" android:layout_columnWeight="1"
+                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
+                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
     </GridLayout>
 </LinearLayout>

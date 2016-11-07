@@ -17,4 +17,6 @@ public class GameFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(R.layout.fragment_game, container, false);
     }
+
+    public void numberBtn(View v) {}
 }
