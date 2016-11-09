@@ -1,179 +1,381 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" android:orientation="vertical">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical">
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="cancel"
-                android:id="@+id/button23"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
         <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/textView6"
+                android:layout_weight="1"
+                android:background="@color/colorBlackMain"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="60"
-                android:id="@+id/textView5" android:gravity="center"/>
+                android:id="@+id/timeTextView"
+                android:gravity="center"
+                android:layout_weight="4"
+                android:background="@color/colorBlackMain"
+                android:textColor="@color/colorGreenMain"
+                android:textSize="20sp"
+                style="@style/SegFont"
+        />
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="✕"
+                android:id="@+id/gameQuitButton"
+                android:layout_weight="1"
+                android:background="@color/colorBlackMain"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+        />
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="3" android:gravity="center">
-        <TextView
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:gravity="center">
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="F"
-                android:id="@+id/textView2" android:layout_weight="1" android:gravity="center" android:textSize="60sp"/>
+                android:id="@+id/leftProblemTextView"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="60sp"
+                android:textColor="@color/colorBlackMain"
+                style="@style/SegFont"
+        />
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="×"
-                android:id="@+id/textView3" android:layout_weight="1" android:gravity="center" android:textSize="40sp"/>
-        <TextView
+                android:id="@+id/textView3"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="40sp"
+                android:textColor="@color/colorBlackMain"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="F"
-                android:id="@+id/textView4" android:layout_weight="1" android:gravity="center" android:textSize="60sp"/>
+                android:id="@+id/rightProblemTextView"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="60sp"
+                android:textColor="@color/colorBlackMain"
+                style="@style/SegFont"
+        />
     </LinearLayout>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="--"
+            android:id="@+id/myAnswerTextView"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/colorBlackMain"
+            android:textSize="30sp"
+    />
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="1" android:gravity="center">
-        <Button
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="delete"
-                android:id="@+id/button21" android:layout_weight="1" android:background="#111111"
-                android:textColor="#ffffff" android:textSize="20sp"/>
-        <TextView
+                android:id="@+id/deleteButton"
+                android:layout_weight="1"
+                android:background="#111111"
+                android:textColor="@color/colorRedMain"
+                android:textSize="20sp"
+                style="@style/NormalFont.Bold"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="0"
-                android:id="@+id/textView" android:layout_weight="1" android:gravity="center" android:textSize="20sp"/>
-        <Button
+                android:id="@+id/resultTextView"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
+                android:background="@color/colorBlackSecond"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="done"
-                android:id="@+id/button22" android:layout_weight="1" android:background="#111111"
-                android:textColor="#ffffff" android:textSize="20sp"/>
+                android:id="@+id/doneButton"
+                android:layout_weight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGreenMain"
+                android:textSize="20sp"
+                style="@style/NormalFont.Bold"
+        />
     </LinearLayout>
     <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp" android:columnCount="4" android:rowCount="4" android:layout_weight="4">
-        <Button
+            android:layout_height="0dp"
+            android:columnCount="4"
+            android:rowCount="4"
+            android:layout_weight="4">
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:text="0"
+                android:id="@+id/zeroButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="1"
-                android:id="@+id/button5" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/oneButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="2"
-                android:id="@+id/button6" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/twoButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="3"
-                android:id="@+id/button7" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/threeButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="4"
-                android:id="@+id/button8" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/fourButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="5"
-                android:id="@+id/button9" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/fiveButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="6"
-                android:id="@+id/button10" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/sixButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="7"
-                android:id="@+id/button11" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/sevenButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="8"
-                android:id="@+id/button12" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/eightButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="9"
-                android:id="@+id/button13" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/nineButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="A"
-                android:id="@+id/button14" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/anumButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="B"
-                android:id="@+id/button15" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/bnumButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="C"
-                android:id="@+id/button16" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/cnumButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"/>
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="D"
-                android:id="@+id/button17" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/dnumButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="E"
-                android:id="@+id/button18" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
+                android:id="@+id/enumButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
+        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:text="F"
-                android:id="@+id/button19" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
-        <Button
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="G"
-                android:id="@+id/button20" android:layout_rowWeight="1" android:layout_columnWeight="1"
-                android:background="#111111" android:textColor="#ffffff" android:textSize="20sp"
-                android:singleLine="false" android:padding="1dp" android:nestedScrollingEnabled="false"/>
+                android:id="@+id/fnumButton"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:background="#111111"
+                android:textColor="@color/colorGraySecond"
+                android:textSize="20sp"
+                android:singleLine="false"
+                android:padding="1dp"
+                android:nestedScrollingEnabled="false"
+                style="@style/SegFont"
+        />
     </GridLayout>
 </LinearLayout>
