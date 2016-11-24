@@ -21,6 +21,7 @@ public class GameFragment extends Fragment {
     private TextView leftNumberTextView;
     private TextView rightNumberTextView;
     private Button deleteButton;
+    private Button doneButton;
     private Button[] numberButton = new Button[16];
     private int[] buttonIdList = {
             R.id.zeroButton, R.id.oneButton, R.id.twoButton, R.id.threeButton,
@@ -30,6 +31,7 @@ public class GameFragment extends Fragment {
     };
     private String answerStr;
     private int leftNum, rightNum;
+    private int correctCnt;
 
 
     @Override
@@ -56,6 +58,13 @@ public class GameFragment extends Fragment {
                 tappedDeleteBtn(view);
             }
         });
+        doneButton = (Button) view.findViewById(R.id.doneButton);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tappedDoneBtn(view);
+            }
+        });
         // Number Button
         for (int i=0; i<16; i++) {
             numberButton[i] = (Button) view.findViewById(buttonIdList[i]);
@@ -67,6 +76,8 @@ public class GameFragment extends Fragment {
                 }
             });
         }
+
+        correctCnt = 0;
     }
 
     private void tappedNumberBtn(View v) {
@@ -90,7 +101,14 @@ public class GameFragment extends Fragment {
     }
 
     private void tappedDoneBtn(View v) {
-        
+        int ans = leftNum * rightNum;
+        String answer = "";
+        if (ans >= 16) { answer += FFNumber.valueOf(ans / 16).toString(); }
+        answer += FFNumber.valueOf(ans % 16).toString();
+        if (answer.equals(answerStr)) {
+            correctCnt++;
+        }
+        generateProblem();
     }
 
     private void generateProblem() {
