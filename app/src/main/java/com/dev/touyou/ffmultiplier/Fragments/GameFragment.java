@@ -10,12 +10,16 @@ import android.widget.TextView;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.R;
 
+import java.util.Random;
+
 /**
  * Created by touyou on 2016/11/06.
  */
 public class GameFragment extends Fragment {
 
     private TextView myAnswerTextView;
+    private TextView leftNumberTextView;
+    private TextView rightNumberTextView;
     private Button deleteButton;
     private Button[] numberButton = new Button[16];
     private int[] buttonIdList = {
@@ -25,6 +29,7 @@ public class GameFragment extends Fragment {
             R.id.cnumButton, R.id.dnumButton, R.id.enumButton, R.id.fnumButton
     };
     private String answerStr;
+    private int leftNum, rightNum;
 
 
     @Override
@@ -39,6 +44,10 @@ public class GameFragment extends Fragment {
 
         answerStr = "";
         myAnswerTextView = (TextView) view.findViewById(R.id.myAnswerTextView);
+        leftNumberTextView = (TextView) view.findViewById(R.id.leftProblemTextView);
+        rightNumberTextView = (TextView) view.findViewById(R.id.rightProblemTextView);
+
+        generateProblem();
 
         deleteButton = (Button) view.findViewById(R.id.deleteButton);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -82,5 +91,12 @@ public class GameFragment extends Fragment {
 
     private void tappedDoneBtn(View v) {
         
+    }
+
+    private void generateProblem() {
+        leftNum = (int)(Math.random() * 16);
+        rightNum = (int)(Math.random() * 16);
+        leftNumberTextView.setText(FFNumber.valueOf(leftNum).toString());
+        rightNumberTextView.setText(FFNumber.valueOf(rightNum).toString());
     }
 }
