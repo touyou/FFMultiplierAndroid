@@ -11,6 +11,7 @@ import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.R;
 
 import java.util.Random;
+import java.util.StringTokenizer;
 
 /**
  * Created by touyou on 2016/11/06.
@@ -20,6 +21,7 @@ public class GameFragment extends Fragment {
     private TextView myAnswerTextView;
     private TextView leftNumberTextView;
     private TextView rightNumberTextView;
+    private TextView resultTextView;
     private Button deleteButton;
     private Button doneButton;
     private Button[] numberButton = new Button[16];
@@ -48,6 +50,7 @@ public class GameFragment extends Fragment {
         myAnswerTextView = (TextView) view.findViewById(R.id.myAnswerTextView);
         leftNumberTextView = (TextView) view.findViewById(R.id.leftProblemTextView);
         rightNumberTextView = (TextView) view.findViewById(R.id.rightProblemTextView);
+        resultTextView = (TextView) view.findViewById(R.id.resultTextView);
 
         generateProblem();
 
@@ -107,6 +110,7 @@ public class GameFragment extends Fragment {
         answer += FFNumber.valueOf(ans % 16).toString();
         if (answer.equals(answerStr)) {
             correctCnt++;
+            resultTextView.setText(String.valueOf(correctCnt));
         }
         generateProblem();
     }
