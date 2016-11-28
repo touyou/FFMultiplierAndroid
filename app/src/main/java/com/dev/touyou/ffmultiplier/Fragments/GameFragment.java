@@ -2,6 +2,7 @@ package com.dev.touyou.ffmultiplier.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,6 @@ import android.widget.TextView;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.R;
 
-import java.util.Random;
-import java.util.StringTokenizer;
 
 /**
  * Created by touyou on 2016/11/06.
@@ -22,6 +21,7 @@ public class GameFragment extends Fragment {
     private TextView leftNumberTextView;
     private TextView rightNumberTextView;
     private TextView resultTextView;
+    private TextView countDownTextView;
     private Button deleteButton;
     private Button doneButton;
     private Button[] numberButton = new Button[16];
@@ -35,6 +35,7 @@ public class GameFragment extends Fragment {
     private int leftNum, rightNum;
     private int correctCnt;
 
+    final CountDown countDown = new CountDown(60000, 1000);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class GameFragment extends Fragment {
         leftNumberTextView = (TextView) view.findViewById(R.id.leftProblemTextView);
         rightNumberTextView = (TextView) view.findViewById(R.id.rightProblemTextView);
         resultTextView = (TextView) view.findViewById(R.id.resultTextView);
+        countDownTextView = (TextView) view.findViewById(R.id.timeTextView);
 
         generateProblem();
 
@@ -120,5 +122,22 @@ public class GameFragment extends Fragment {
         rightNum = (int)(Math.random() * 16);
         leftNumberTextView.setText(FFNumber.valueOf(leftNum).toString());
         rightNumberTextView.setText(FFNumber.valueOf(rightNum).toString());
+    }
+
+    class CountDown extends CountDownTimer {
+        public CountDown(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onFinish() {
+            //  ここで遷移する
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            long ss = millisUntilFinished / 1000;
+            countDownTextView.setText(String.valueOf(ss));
+        }
     }
 }
