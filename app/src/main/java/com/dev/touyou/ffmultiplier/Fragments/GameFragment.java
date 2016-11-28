@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.R;
 
@@ -35,7 +36,7 @@ public class GameFragment extends Fragment {
     private int leftNum, rightNum;
     private int correctCnt;
 
-    final CountDown countDown = new CountDown(60000, 1000);
+    final CountDown countDown = new CountDown(60500, 1000);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class GameFragment extends Fragment {
         }
 
         correctCnt = 0;
+        countDown.start();
     }
 
     private void tappedNumberBtn(View v) {
@@ -113,6 +115,9 @@ public class GameFragment extends Fragment {
         if (answer.equals(answerStr)) {
             correctCnt++;
             resultTextView.setText(String.valueOf(correctCnt));
+            Toast.makeText(getActivity(), "ACCEPTED", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "FAILED", Toast.LENGTH_SHORT).show();
         }
         generateProblem();
     }
@@ -122,6 +127,8 @@ public class GameFragment extends Fragment {
         rightNum = (int)(Math.random() * 16);
         leftNumberTextView.setText(FFNumber.valueOf(leftNum).toString());
         rightNumberTextView.setText(FFNumber.valueOf(rightNum).toString());
+        answerStr = "";
+        myAnswerTextView.setText("--");
     }
 
     class CountDown extends CountDownTimer {
@@ -132,6 +139,7 @@ public class GameFragment extends Fragment {
         @Override
         public void onFinish() {
             //  ここで遷移する
+            countDownTextView.setText("0");
         }
 
         @Override

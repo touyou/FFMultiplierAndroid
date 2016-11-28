@@ -26,7 +26,7 @@
                 android:text="time attack"
                 android:id="@+id/button" android:layout_weight="1" android:background="@android:color/transparent"
                 style="@style/NormalFont"
-        />
+                android:onClick="toGameView"/>
         <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

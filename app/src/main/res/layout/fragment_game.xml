@@ -81,7 +81,7 @@
                 style="@style/SegFont"
         />
     </LinearLayout>
-    <TextView
+    <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="--"
@@ -90,6 +90,7 @@
             android:gravity="center"
             android:textColor="@color/colorBlackMain"
             android:textSize="30sp"
+            style="@style/SegFont"
     />
     <LinearLayout
             android:orientation="horizontal"
