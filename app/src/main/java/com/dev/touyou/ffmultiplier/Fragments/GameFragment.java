@@ -1,16 +1,26 @@
 package com.dev.touyou.ffmultiplier.Fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.dev.touyou.ffmultiplier.Activity.GameActivity;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.R;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.LogRecord;
 
 
 /**
@@ -26,6 +36,8 @@ public class GameFragment extends Fragment {
     private Button deleteButton;
     private Button doneButton;
     private Button[] numberButton = new Button[16];
+    private PopupWindow popupWindow;
+    private Context gameActivity;
     private int[] buttonIdList = {
             R.id.zeroButton, R.id.oneButton, R.id.twoButton, R.id.threeButton,
             R.id.fourButton, R.id.fiveButton, R.id.sixButton, R.id.sevenButton,
@@ -36,7 +48,28 @@ public class GameFragment extends Fragment {
     private int leftNum, rightNum;
     private int correctCnt;
 
-    final CountDown countDown = new CountDown(60500, 1000);
+    private Timer timer;
+    private CountDown timerTask = null;
+    private Handler handler = new Handler();
+    private long count = 60;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachContext(context);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) return;
+        onAttachContext(activity);
+    }
+
+    private void onAttachContext(Context context) {
+        // 処理
+        gameActivity = context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,8 +116,18 @@ public class GameFragment extends Fragment {
             });
         }
 
+        popupWindow = new PopupWindow(gameActivity);
+        View popupView = View.inflate(gameActivity, R.layout.popup_layout, null);
+        popupWindow.setContentView(popupView);
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_background));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+
         correctCnt = 0;
-        countDown.start();
+
+        timer = new Timer();
+        timerTask = new CountDown();
+        timer.schedule(timerTask, 0, 1000);
     }
 
     private void tappedNumberBtn(View v) {
@@ -115,9 +158,9 @@ public class GameFragment extends Fragment {
         if (answer.equals(answerStr)) {
             correctCnt++;
             resultTextView.setText(String.valueOf(correctCnt));
-            Toast.makeText(getActivity(), "ACCEPTED", Toast.LENGTH_SHORT).show();
+            Toast.makeText(gameActivity, "ACCEPTED", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getActivity(), "FAILED", Toast.LENGTH_SHORT).show();
+            Toast.makeText(gameActivity, "FAILED", Toast.LENGTH_SHORT).show();
         }
         generateProblem();
     }
@@ -131,21 +174,21 @@ public class GameFragment extends Fragment {
         myAnswerTextView.setText("--");
     }
 
-    class CountDown extends CountDownTimer {
-        public CountDown(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
+    class CountDown extends TimerTask {
         @Override
-        public void onFinish() {
-            //  ここで遷移する
-            countDownTextView.setText("0");
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            long ss = millisUntilFinished / 1000;
-            countDownTextView.setText(String.valueOf(ss));
+        public void run() {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    count--;
+                    countDownTextView.setText(String.valueOf(count));
+                    if (count == 0) {
+                        timer.cancel();
+                        // result
+                        return;
+                    }
+                }
+            });
         }
     }
 }
