@@ -27,18 +27,18 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="0"
-            android:id="@+id/textView4" android:textAlignment="center" android:textColor="@color/colorBlackMain"
+            android:id="@+id/resultPointTextView" android:textAlignment="center" android:textColor="@color/colorBlackMain"
             android:layout_weight="8" android:gravity="center_vertical" style="@style/SegFont" android:textSize="30sp"/>
     <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="Share"
-            android:id="@+id/button5" android:layout_weight="1.5" android:background="#ffffff"
+            android:id="@+id/popupShareButton" android:layout_weight="1.5" android:background="#ffffff"
             style="@style/NormalFont" android:textColor="@color/colorGraySecond"/>
     <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="Exit"
-            android:id="@+id/button6" android:layout_weight="1.5" android:background="#ffffff"
+            android:id="@+id/exitButton" android:layout_weight="1.5" android:background="#ffffff"
             style="@style/NormalFont" android:textColor="@color/colorGraySecond"/>
 </LinearLayout>

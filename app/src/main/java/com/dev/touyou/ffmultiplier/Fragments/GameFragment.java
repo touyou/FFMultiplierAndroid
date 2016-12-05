@@ -5,22 +5,20 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.*;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.dev.touyou.ffmultiplier.Activity.GameActivity;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.R;
 
+import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.LogRecord;
 
 
 /**
@@ -33,8 +31,10 @@ public class GameFragment extends Fragment {
     private TextView rightNumberTextView;
     private TextView resultTextView;
     private TextView countDownTextView;
+    private TextView resultPointTextView;
     private Button deleteButton;
     private Button doneButton;
+    private Button cancelButton;
     private Button[] numberButton = new Button[16];
     private PopupWindow popupWindow;
     private Context gameActivity;
@@ -104,6 +104,13 @@ public class GameFragment extends Fragment {
                 tappedDoneBtn(view);
             }
         });
+        cancelButton = (Button) view.findViewById(R.id.gameQuitButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tappedExitBtn(view);
+            }
+        });
         // Number Button
         for (int i=0; i<16; i++) {
             numberButton[i] = (Button) view.findViewById(buttonIdList[i]);
@@ -117,11 +124,7 @@ public class GameFragment extends Fragment {
         }
 
         popupWindow = new PopupWindow(gameActivity);
-        View popupView = View.inflate(gameActivity, R.layout.popup_layout, null);
-        popupWindow.setContentView(popupView);
-        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_background));
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setFocusable(true);
+
 
         correctCnt = 0;
 
@@ -174,6 +177,47 @@ public class GameFragment extends Fragment {
         myAnswerTextView.setText("--");
     }
 
+    private void result() {
+        // popupの設定
+        View popupView = View.inflate(gameActivity, R.layout.popup_layout, null);
+        resultPointTextView = (TextView) popupView.findViewById(R.id.resultPointTextView);
+        resultPointTextView.setText(String.valueOf(correctCnt * 10));
+        popupView.findViewById(R.id.popupShareButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tappedShareBtn(view);
+            }
+        });
+        popupView.findViewById(R.id.exitButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tappedExitBtn(view);
+            }
+        });
+        popupWindow.setContentView(popupView);
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_background));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
+        float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
+        popupWindow.setWindowLayoutMode((int) width, (int) height);
+        popupWindow.setWidth((int) width);
+        popupWindow.setHeight((int) height);
+        popupWindow.showAtLocation(deleteButton, Gravity.CENTER, 0, 0);
+        // Realmへの保存・更新処理
+    }
+
+    private void tappedShareBtn(View v) {
+        
+    }
+
+    private void tappedExitBtn(View v) {
+        if (popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
+        // ここでFragmentを終了する
+    }
+
     class CountDown extends TimerTask {
         @Override
         public void run() {
@@ -184,7 +228,7 @@ public class GameFragment extends Fragment {
                     countDownTextView.setText(String.valueOf(count));
                     if (count == 0) {
                         timer.cancel();
-                        // result
+                        result();
                         return;
                     }
                 }
