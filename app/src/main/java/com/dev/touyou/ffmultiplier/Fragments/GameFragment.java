@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ShareCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
@@ -211,7 +212,22 @@ public class GameFragment extends Fragment {
     }
 
     private void tappedShareBtn(View v) {
+        String articleURL = "hello";
+        String articleTitle = "記事のタイトル";
+        String sharedText = articleTitle + " " + articleURL;
 
+        // builderの生成　ShareCompat.IntentBuilder.from(Context context);
+        ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(this.getActivity());
+        // アプリ一覧が表示されるDialogのタイトルの設定
+        builder.setChooserTitle("Select App");
+        // シェアするタイトル
+        builder.setSubject(articleTitle);
+        // シェアするテキスト
+        builder.setText(sharedText);
+        // シェアするタイプ（他にもいっぱいあるよ）
+        builder.setType("text/plain");
+        // Shareアプリ一覧のDialogの表示
+        builder.startChooser();
     }
 
     private void tappedExitBtn(View v) {
