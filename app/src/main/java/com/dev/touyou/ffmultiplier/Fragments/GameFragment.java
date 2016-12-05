@@ -3,6 +3,8 @@ package com.dev.touyou.ffmultiplier.Fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -195,7 +197,8 @@ public class GameFragment extends Fragment {
             }
         });
         popupWindow.setContentView(popupView);
-        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_background));
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        popupWindow.setElevation(10);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
         float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics());
@@ -208,7 +211,7 @@ public class GameFragment extends Fragment {
     }
 
     private void tappedShareBtn(View v) {
-        
+
     }
 
     private void tappedExitBtn(View v) {
