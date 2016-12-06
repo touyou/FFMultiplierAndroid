@@ -17,11 +17,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
+import com.dev.touyou.ffmultiplier.Model.ScoreModel;
 import com.dev.touyou.ffmultiplier.R;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
-import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 /**
@@ -35,6 +37,7 @@ public class GameFragment extends Fragment {
     private TextView resultTextView;
     private TextView countDownTextView;
     private TextView resultPointTextView;
+    private TextView highScoreView;
     private Button deleteButton;
     private Button doneButton;
     private Button cancelButton;
@@ -181,10 +184,24 @@ public class GameFragment extends Fragment {
     }
 
     private void result() {
+        // Realm
+        Calendar cal = Calendar.getInstance();
+        final ScoreModel scoreModel = new ScoreModel();
+        scoreModel.setScore(correctCnt * 10);
+        scoreModel.setDate(cal.getTime());
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(scoreModel);
+            }
+        });
         // popupの設定
         View popupView = View.inflate(gameActivity, R.layout.popup_layout, null);
         resultPointTextView = (TextView) popupView.findViewById(R.id.resultPointTextView);
         resultPointTextView.setText(String.valueOf(correctCnt * 10));
+        highScoreView = (TextView) popupView.findViewById(R.id.highScoreView);
+        highScoreView.setVisibility(View.INVISIBLE);
         popupView.findViewById(R.id.popupShareButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -208,7 +225,20 @@ public class GameFragment extends Fragment {
         popupWindow.setWidth((int) width);
         popupWindow.setHeight((int) height);
         popupWindow.showAtLocation(deleteButton, Gravity.CENTER, 0, 0);
-        // Realmへの保存・更新処理
+        // 最高得点かどうか？
+        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAllSorted("score", Sort.DESCENDING);
+        if (results.size() > 0) {
+            if (results.first().getScore() <= correctCnt * 10) {
+                updateHighScore(correctCnt * 10);
+                highScoreView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            updateHighScore(correctCnt * 10);
+        }
+    }
+
+    private void updateHighScore(int score) {
+        Log.d("debug", "updateHighScore");
     }
 
     private void tappedShareBtn(View v) {
