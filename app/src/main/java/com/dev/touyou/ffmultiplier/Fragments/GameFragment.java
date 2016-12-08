@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ShareCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
@@ -20,7 +21,11 @@ import android.widget.*;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.Model.ScoreModel;
 import com.dev.touyou.ffmultiplier.R;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -190,7 +195,10 @@ public class GameFragment extends Fragment {
         final ScoreModel scoreModel = new ScoreModel();
         scoreModel.setScore(correctCnt * 10);
         scoreModel.setDate(cal.getTime());
-        Realm realm = Realm.getDefaultInstance();
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
+        Realm.deleteRealm(realmConfig);
+        Realm realm = Realm.getInstance(realmConfig);
+        // Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -238,8 +246,10 @@ public class GameFragment extends Fragment {
         }
     }
 
-    private void updateHighScore(int score) {
+    private void updateHighScore(final int score) {
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(gameActivity);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference ref = database.getReference();
         if (sp.getString("name", null) == null) {
             LayoutInflater inflater = LayoutInflater.from(gameActivity);
             View dialog = inflater.inflate(R.layout.input_dialog, null);
@@ -248,20 +258,51 @@ public class GameFragment extends Fragment {
             new AlertDialog.Builder(gameActivity).setTitle("please set your name").setView(dialog).setPositiveButton("ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    String name = editText.getText().toString();
+                    final String userName = editText.getText().toString();
                     // スコアを登録
-                    sp.edit().putString("name", name).commit();
+                    Thread adIdThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            AdvertisingIdClient.Info adInfo = null;
+                            try {
+                                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
+                                final String id = adInfo.getId();
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("name", userName);
+                                map.put("score", score);
+                                ref.child("scores").child(id).setValue(map);
+                            } catch (Exception e) {
+                            }
+                        }
+                    });
+                    adIdThread.start();
+                    sp.edit().putString("name", userName).commit();
+                }
+            }).show();
+        } else {
+            final String userName = sp.getString("name", null);
+            // スコアを送信
+            Thread adIdThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AdvertisingIdClient.Info adInfo = null;
+                    try {
+                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
+                        final String id = adInfo.getId();
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("name", userName);
+                        map.put("score", score);
+                        ref.child("scores").child(id).setValue(map);
+                    } catch (Exception e) {
+                    }
                 }
             });
-        } else {
-            String name = sp.getString("name", null);
-            // スコアを送信
         }
     }
 
     private void tappedShareBtn(View v) {
-        String articleURL = "hello";
-        String articleTitle = "記事のタイトル";
+        String articleURL = "PlayStoreのURL";
+        String articleTitle = "I got" + String.valueOf(correctCnt * 10)  + "points! Let's play FFMultiplier with me! #FFMultiplier";
         String sharedText = articleTitle + " " + articleURL;
 
         // builderの生成 ShareCompat.IntentBuilder.from(Context context);
