@@ -195,10 +195,11 @@ public class GameFragment extends Fragment {
         final ScoreModel scoreModel = new ScoreModel();
         scoreModel.setScore(correctCnt * 10);
         scoreModel.setDate(cal.getTime());
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
+        /** for debug
+         RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
         Realm.deleteRealm(realmConfig);
-        Realm realm = Realm.getInstance(realmConfig);
-        // Realm realm = Realm.getDefaultInstance();
+        Realm realm = Realm.getInstance(realmConfig);*/
+        Realm realm = Realm.getDefaultInstance();
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
