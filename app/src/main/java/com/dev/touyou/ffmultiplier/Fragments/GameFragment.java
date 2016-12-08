@@ -1,21 +1,22 @@
 package com.dev.touyou.ffmultiplier.Fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ShareCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
-import android.widget.Button;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
 import com.dev.touyou.ffmultiplier.Model.ScoreModel;
 import com.dev.touyou.ffmultiplier.R;
@@ -238,7 +239,24 @@ public class GameFragment extends Fragment {
     }
 
     private void updateHighScore(int score) {
-        Log.d("debug", "updateHighScore");
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(gameActivity);
+        if (sp.getString("name", null) == null) {
+            LayoutInflater inflater = LayoutInflater.from(gameActivity);
+            View dialog = inflater.inflate(R.layout.input_dialog, null);
+            final EditText editText = (EditText) dialog.findViewById(R.id.editNameText);
+
+            new AlertDialog.Builder(gameActivity).setTitle("please set your name").setView(dialog).setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    String name = editText.getText().toString();
+                    // スコアを登録
+                    sp.edit().putString("name", name).commit();
+                }
+            });
+        } else {
+            String name = sp.getString("name", null);
+            // スコアを送信
+        }
     }
 
     private void tappedShareBtn(View v) {
@@ -246,7 +264,7 @@ public class GameFragment extends Fragment {
         String articleTitle = "記事のタイトル";
         String sharedText = articleTitle + " " + articleURL;
 
-        // builderの生成　ShareCompat.IntentBuilder.from(Context context);
+        // builderの生成 ShareCompat.IntentBuilder.from(Context context);
         ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(this.getActivity());
         // アプリ一覧が表示されるDialogのタイトルの設定
         builder.setChooserTitle("Select App");
