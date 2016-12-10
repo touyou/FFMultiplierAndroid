@@ -1,6 +1,6 @@
 package com.dev.touyou.ffmultiplier.Activity;
 
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ public class LocalRankActivity extends AppCompatActivity implements ListFragment
         setContentView(R.layout.activity_local_rank);
 
         ListFragment listFragment = ListFragment.newInstance("local_mode");
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.localListContainer, listFragment);
         transaction.commit();
     }

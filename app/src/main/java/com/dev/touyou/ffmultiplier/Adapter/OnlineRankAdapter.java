@@ -6,27 +6,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import com.dev.touyou.ffmultiplier.Model.LocalScoreItem;
+import com.dev.touyou.ffmultiplier.Model.OnlineScoreItem;
 import com.dev.touyou.ffmultiplier.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * Created by touyou on 2016/12/10.
  */
-public class LocalRankAdapter extends BaseAdapter {
+public class OnlineRankAdapter extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
-    ArrayList<LocalScoreItem> scoreList;
+    ArrayList<OnlineScoreItem> scoreList;
 
-    public LocalRankAdapter(Context context) {
+    public OnlineRankAdapter(Context context) {
         this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setScoreList(ArrayList<LocalScoreItem> scoreList) {
+    public void setScoreList(ArrayList<OnlineScoreItem> scoreList) {
         this.scoreList = scoreList;
     }
 
@@ -47,12 +45,11 @@ public class LocalRankAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view = layoutInflater.inflate(R.layout.local_score_item, viewGroup, false);
+        view = layoutInflater.inflate(R.layout.online_score_item, viewGroup, false);
 
-        ((TextView) view.findViewById(R.id.localRankTextView)).setText(scoreList.get(i).getRank() + ". ");
-        ((TextView) view.findViewById(R.id.localNameTextView)).setText(scoreList.get(i).getScore() + " points");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-        ((TextView) view.findViewById(R.id.localDateTextView)).setText(dateFormat.format(scoreList.get(i).getDate()));
+        ((TextView) view.findViewById(R.id.onlineNameTextView)).setText(scoreList.get(i).getName());
+        ((TextView) view.findViewById(R.id.onlinePointTextView)).setText(scoreList.get(i).getScore()+" points");
+        ((TextView) view.findViewById(R.id.onlineRankTextView)).setText(scoreList.get(i).getRank()+". ");
 
         return view;
     }
