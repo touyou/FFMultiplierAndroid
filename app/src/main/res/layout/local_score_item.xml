@@ -30,12 +30,12 @@
                 android:layout_height="match_parent"
                 android:text="date: "
                 android:id="@+id/textView5" android:textColor="#ffffff" android:gravity="center_vertical|right"
-                android:layout_weight="1" />
+                android:layout_weight="2" />
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="2016/11/11"
-                android:id="@+id/localDateTextView" android:gravity="left|center_vertical" android:layout_weight="1"
+                android:id="@+id/localDateTextView" android:gravity="left|center_vertical" android:layout_weight="4"
                 android:textColor="#ffffff" />
     </LinearLayout>
 </LinearLayout>
