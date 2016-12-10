@@ -1,27 +1,35 @@
 package com.dev.touyou.ffmultiplier.Fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ShareCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
-import android.widget.Button;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
+import com.dev.touyou.ffmultiplier.Model.ScoreModel;
 import com.dev.touyou.ffmultiplier.R;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
-import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 /**
@@ -35,12 +43,14 @@ public class GameFragment extends Fragment {
     private TextView resultTextView;
     private TextView countDownTextView;
     private TextView resultPointTextView;
+    private TextView highScoreView;
     private Button deleteButton;
     private Button doneButton;
     private Button cancelButton;
     private Button[] numberButton = new Button[16];
     private PopupWindow popupWindow;
     private Context gameActivity;
+    private GameFragmentListener listener;
     private int[] buttonIdList = {
             R.id.zeroButton, R.id.oneButton, R.id.twoButton, R.id.threeButton,
             R.id.fourButton, R.id.fiveButton, R.id.sixButton, R.id.sevenButton,
@@ -72,6 +82,11 @@ public class GameFragment extends Fragment {
     private void onAttachContext(Context context) {
         // 処理
         gameActivity = context;
+        try {
+            listener = (GameFragmentListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnArticleSelectedListener");
+        }
     }
 
     @Override
@@ -136,6 +151,12 @@ public class GameFragment extends Fragment {
         timer.schedule(timerTask, 0, 1000);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
+    }
+
     private void tappedNumberBtn(View v) {
         int tag = (int) v.getTag();
         String inputStr = FFNumber.valueOf(tag).toString();
@@ -181,10 +202,28 @@ public class GameFragment extends Fragment {
     }
 
     private void result() {
+        // Realm
+        Calendar cal = Calendar.getInstance();
+        final ScoreModel scoreModel = new ScoreModel();
+        scoreModel.setScore(correctCnt * 10);
+        scoreModel.setDate(cal.getTime());
+        /** for debug
+         RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
+        Realm.deleteRealm(realmConfig);
+        Realm realm = Realm.getInstance(realmConfig);*/
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(scoreModel);
+            }
+        });
         // popupの設定
         View popupView = View.inflate(gameActivity, R.layout.popup_layout, null);
         resultPointTextView = (TextView) popupView.findViewById(R.id.resultPointTextView);
         resultPointTextView.setText(String.valueOf(correctCnt * 10));
+        highScoreView = (TextView) popupView.findViewById(R.id.highScoreView);
+        highScoreView.setVisibility(View.INVISIBLE);
         popupView.findViewById(R.id.popupShareButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -208,15 +247,79 @@ public class GameFragment extends Fragment {
         popupWindow.setWidth((int) width);
         popupWindow.setHeight((int) height);
         popupWindow.showAtLocation(deleteButton, Gravity.CENTER, 0, 0);
-        // Realmへの保存・更新処理
+        // 最高得点かどうか？
+        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAllSorted("score", Sort.DESCENDING);
+        if (results.size() > 0) {
+            if (results.first().getScore() <= correctCnt * 10) {
+                updateHighScore(correctCnt * 10);
+                highScoreView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            updateHighScore(correctCnt * 10);
+        }
+    }
+
+    private void updateHighScore(final int score) {
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(gameActivity);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference ref = database.getReference();
+        if (sp.getString("name", null) == null) {
+            LayoutInflater inflater = LayoutInflater.from(gameActivity);
+            View dialog = inflater.inflate(R.layout.input_dialog, null);
+            final EditText editText = (EditText) dialog.findViewById(R.id.editNameText);
+
+            new AlertDialog.Builder(gameActivity).setTitle("please set your name").setView(dialog).setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    final String userName = editText.getText().toString();
+                    // スコアを登録
+                    Thread adIdThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            AdvertisingIdClient.Info adInfo = null;
+                            try {
+                                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
+                                final String id = adInfo.getId();
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("name", userName);
+                                map.put("score", score);
+                                ref.child("scores").child(id).setValue(map);
+                            } catch (Exception e) {
+                            }
+                        }
+                    });
+                    adIdThread.start();
+                    sp.edit().putString("name", userName).commit();
+                }
+            }).show();
+        } else {
+            final String userName = sp.getString("name", null);
+            // スコアを送信
+            Thread adIdThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AdvertisingIdClient.Info adInfo = null;
+                    try {
+                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
+                        final String id = adInfo.getId();
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("name", userName);
+                        map.put("score", score);
+                        ref.child("scores").child(id).setValue(map);
+                    } catch (Exception e) {
+                    }
+                }
+            });
+            adIdThread.start();
+        }
     }
 
     private void tappedShareBtn(View v) {
-        String articleURL = "hello";
-        String articleTitle = "記事のタイトル";
+        String articleURL = "PlayStoreのURL";
+        String articleTitle = "I got" + String.valueOf(correctCnt * 10)  + "points! Let's play FFMultiplier with me! #FFMultiplier";
         String sharedText = articleTitle + " " + articleURL;
 
-        // builderの生成　ShareCompat.IntentBuilder.from(Context context);
+        // builderの生成 ShareCompat.IntentBuilder.from(Context context);
         ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(this.getActivity());
         // アプリ一覧が表示されるDialogのタイトルの設定
         builder.setChooserTitle("Select App");
@@ -235,6 +338,7 @@ public class GameFragment extends Fragment {
             popupWindow.dismiss();
         }
         // ここでFragmentを終了する
+        listener.onDestroyActivity();
     }
 
     class CountDown extends TimerTask {
@@ -253,5 +357,10 @@ public class GameFragment extends Fragment {
                 }
             });
         }
+    }
+
+    // Listener
+    public interface GameFragmentListener {
+        void onDestroyActivity();
     }
 }
