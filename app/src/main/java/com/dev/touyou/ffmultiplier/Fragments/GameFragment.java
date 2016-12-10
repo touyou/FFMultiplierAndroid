@@ -17,6 +17,7 @@ import android.util.TypedValue;
 import android.view.*;
 import android.widget.*;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
+import com.dev.touyou.ffmultiplier.Model.DatabaseScore;
 import com.dev.touyou.ffmultiplier.Model.ScoreModel;
 import com.dev.touyou.ffmultiplier.R;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -280,10 +281,8 @@ public class GameFragment extends Fragment {
                             try {
                                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
                                 final String id = adInfo.getId();
-                                Map<String, Object> map = new HashMap<>();
-                                map.put("name", userName);
-                                map.put("score", score);
-                                ref.child("scores").child(id).setValue(map);
+                                DatabaseScore databaseScore = new DatabaseScore(userName, score);
+                                ref.child("scores").child(id).setValue(databaseScore);
                             } catch (Exception e) {
                             }
                         }
@@ -302,10 +301,8 @@ public class GameFragment extends Fragment {
                     try {
                         adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
                         final String id = adInfo.getId();
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("name", userName);
-                        map.put("score", score);
-                        ref.child("scores").child(id).setValue(map);
+                        DatabaseScore databaseScore = new DatabaseScore(userName, score);
+                        ref.child("scores").child(id).setValue(databaseScore);
                     } catch (Exception e) {
                     }
                 }

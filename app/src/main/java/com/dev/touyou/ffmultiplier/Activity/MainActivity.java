@@ -56,4 +56,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LocalRankActivity.class);
         startActivity(intent);
     }
+
+    public void toOnlineView(View v) {
+        Intent intent = new Intent(this, RankingActivity.class);
+        startActivity(intent);
+    }
 }

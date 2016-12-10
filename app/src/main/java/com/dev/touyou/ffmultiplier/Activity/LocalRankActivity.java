@@ -26,4 +26,7 @@ public class LocalRankActivity extends AppCompatActivity implements ListFragment
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    @Override
+    public void setMyRank(int rank) {
+    }
 }

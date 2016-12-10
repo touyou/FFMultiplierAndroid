@@ -4,20 +4,28 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ListView;
 import com.dev.touyou.ffmultiplier.Adapter.LocalRankAdapter;
+import com.dev.touyou.ffmultiplier.Adapter.OnlineRankAdapter;
+import com.dev.touyou.ffmultiplier.Model.DatabaseScore;
 import com.dev.touyou.ffmultiplier.Model.LocalScoreItem;
+import com.dev.touyou.ffmultiplier.Model.OnlineScoreItem;
 import com.dev.touyou.ffmultiplier.Model.ScoreModel;
 import com.dev.touyou.ffmultiplier.R;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.firebase.database.*;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-import java.util.ArrayList;
+import java.util.*;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -129,7 +137,80 @@ public class ListFragment extends Fragment {
         return localScoreItem;
     }
 
-    private void setOnline(String mode) {}
+    private void setOnline(final String mode) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference();
+
+        final ArrayList<OnlineScoreItem> arrayList = new ArrayList<>();
+        final OnlineRankAdapter onlineRankAdapter = new OnlineRankAdapter(getActivity());
+        onlineRankAdapter.setScoreList(arrayList);
+        onlineRankAdapter.setTopMode(mode == "top");
+        listView.setAdapter(onlineRankAdapter);
+
+        ref.child("scores").orderByPriority().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, DatabaseScore> map = dataSnapshot.getValue(new GenericTypeIndicator<Map<String, DatabaseScore>>() {
+                    @Override
+                    public int hashCode() {
+                        return super.hashCode();
+                    }
+                });
+                // Map.Entryのリストを作成
+                final List<Map.Entry<String, DatabaseScore>> entries = new ArrayList<>(map.entrySet());
+                // 比較用
+                Collections.sort(entries, new Comparator<Map.Entry<String, DatabaseScore>>() {
+                    @Override
+                    public int compare(Map.Entry<String, DatabaseScore> o1, Map.Entry<String, DatabaseScore> o2) {
+                        Integer o2score = Integer.valueOf(o2.getValue().getScore());
+                        Integer o1score = Integer.valueOf(o1.getValue().getScore());
+                        return o2score.compareTo(o1score);
+                    }
+                });
+
+                Thread adIdThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AdvertisingIdClient.Info adInfo;
+                        try {
+                            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());
+                            final String id = adInfo.getId();
+                            int r = 0;
+                            int pos = 0;
+                            int nextScore = -10;
+                            for (Map.Entry<String, DatabaseScore> e: entries) {
+                                if (nextScore != e.getValue().getScore()) {
+                                    r = pos + 1;
+                                    nextScore = e.getValue().getScore();
+                                }
+                                onlineRankAdapter.add(convertOnlineScore(r, e.getValue()));
+                                if (id == e.getKey()) {
+                                    mListener.setMyRank(r);
+                                    onlineRankAdapter.setMyPos(r);
+                                }
+                                pos++;
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                });
+                adIdThread.start();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    private OnlineScoreItem convertOnlineScore(int i, DatabaseScore databaseScore) {
+        OnlineScoreItem ret = new OnlineScoreItem();
+        ret.setName(databaseScore.getName());
+        ret.setScore(databaseScore.getScore());
+        ret.setRank(i);
+        return ret;
+    }
 
     @Override
     public void onDetach() {
@@ -139,5 +220,6 @@ public class ListFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
+        void setMyRank(int rank);
     }
 }
