@@ -2,6 +2,7 @@ package com.dev.touyou.ffmultiplier.Activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import com.dev.touyou.ffmultiplier.Fragments.GameFragment;
 import com.dev.touyou.ffmultiplier.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class GameActivity extends AppCompatActivity implements GameFragment.GameFragmentListener {
 
@@ -42,6 +44,11 @@ public class GameActivity extends AppCompatActivity implements GameFragment.Game
             }
         });
         adThread.start();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

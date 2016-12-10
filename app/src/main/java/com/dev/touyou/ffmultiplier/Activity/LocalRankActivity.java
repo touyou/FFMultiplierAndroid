@@ -1,10 +1,12 @@
 package com.dev.touyou.ffmultiplier.Activity;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.dev.touyou.ffmultiplier.Fragments.ListFragment;
 import com.dev.touyou.ffmultiplier.R;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class LocalRankActivity extends AppCompatActivity implements ListFragment.OnFragmentInteractionListener {
 
@@ -18,4 +20,10 @@ public class LocalRankActivity extends AppCompatActivity implements ListFragment
         transaction.add(R.id.localListContainer, listFragment);
         transaction.commit();
     }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
 }

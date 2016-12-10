@@ -21,36 +21,32 @@
                 android:layout_height="0dp"
                 android:id="@+id/imageView" android:src="@drawable/key_visual" android:scaleType="fitCenter"
                 android:layout_weight="5"/>
-        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+        <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="time attack"
                 android:id="@+id/button" android:layout_weight="1" android:background="@android:color/transparent"
-                style="@style/NormalFont"
                 android:onClick="toGameView"/>
-        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+        <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="local score"
                 android:id="@+id/button2" android:layout_weight="1" android:background="@android:color/transparent"
-                style="@style/NormalFont"
                 android:onClick="toLocalView"/>
-        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+        <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="online ranking"
                 android:id="@+id/button3" android:layout_weight="1" android:background="@android:color/transparent"
-                style="@style/NormalFont"
         />
-        <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+        <Button
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="settings"
                 android:id="@+id/button4" android:layout_weight="1" android:background="@android:color/transparent"
-                style="@style/NormalFont"
                 android:onClick="toSettingView"/>
         <com.google.android.gms.ads.AdView
-                android:layout_width="match_parent"
+                android:layout_width="411dp"
                 android:layout_height="49dp" android:id="@+id/mainBanner" android:layout_gravity="center_horizontal"
                 ads:adSize="SMART_BANNER"
                 ads:adUnitId="@string/top_banner_ads_id"

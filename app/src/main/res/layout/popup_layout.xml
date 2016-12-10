@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
@@ -8,37 +8,42 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
-    <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="Result"
             android:id="@+id/textView" android:textColor="#ffffff"
             android:textStyle="bold" android:background="@color/colorBlackMain" android:textAlignment="center"
-            android:layout_weight="1.5" android:gravity="center_vertical" style="@style/NormalFont.Bold"
+            android:layout_weight="1.5" android:gravity="center_vertical"
+            fontPath="@string/futurabold_font"
+            tools:ignored="MissingPrefix"
             android:textSize="18sp"/>
-    <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="🎉High Score🎉"
             android:id="@+id/highScoreView" android:textAlignment="center" android:textColor="@color/colorBlackMain"
-            android:layout_weight="1.5" android:gravity="center_vertical" style="@style/NormalFont"
+            android:layout_weight="1.5" android:gravity="center_vertical"
             android:textSize="16sp"/>
-    <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="0"
             android:id="@+id/resultPointTextView" android:textAlignment="center" android:textColor="@color/colorBlackMain"
-            android:layout_weight="8" android:gravity="center_vertical" style="@style/SegFont" android:textSize="30sp"/>
-    <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+            android:layout_weight="8" android:gravity="center_vertical"
+            fontPath="@string/dseg_font"
+            tools:ignored="MissingPrefix"
+            android:textSize="30sp"/>
+    <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="Share"
             android:id="@+id/popupShareButton" android:layout_weight="1.5" android:background="#ffffff"
-            style="@style/NormalFont" android:textColor="@color/colorGraySecond"/>
-    <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+            android:textColor="@color/colorGraySecond"/>
+    <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="Exit"
             android:id="@+id/exitButton" android:layout_weight="1.5" android:background="#ffffff"
-            style="@style/NormalFont" android:textColor="@color/colorGraySecond"/>
+            android:textColor="@color/colorGraySecond"/>
 </LinearLayout>

@@ -11,8 +11,10 @@ import com.dev.touyou.ffmultiplier.Model.LocalScoreItem;
 import com.dev.touyou.ffmultiplier.R;
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by touyou on 2016/12/10.
@@ -52,7 +54,8 @@ public class LocalRankAdapter extends BaseAdapter {
 
         ((TextView) view.findViewById(R.id.localRankTextView)).setText(scoreList.get(i).getRank() + ". ");
         ((TextView) view.findViewById(R.id.localNameTextView)).setText(scoreList.get(i).getScore() + " points");
-        ((TextView) view.findViewById(R.id.localDateTextView)).setText(DateFormat.format("yyyy/MM/dd", scoreList.get(i).getDate()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS", Locale.getDefault());
+        ((TextView) view.findViewById(R.id.localDateTextView)).setText(dateFormat.format(scoreList.get(i).getDate()));
 
         return view;
     }

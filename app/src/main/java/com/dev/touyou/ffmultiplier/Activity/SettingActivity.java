@@ -1,5 +1,6 @@
 package com.dev.touyou.ffmultiplier.Activity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import com.dev.touyou.ffmultiplier.R;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,11 @@ public class SettingActivity extends AppCompatActivity {
         if (name != null) {
             editText.setText(name);
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     public void tappedSaveBtn(View v) {

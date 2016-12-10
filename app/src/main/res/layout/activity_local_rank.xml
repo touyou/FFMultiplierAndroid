@@ -15,12 +15,15 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <com.dev.touyou.ffmultiplier.CustomClass.CustomTextView
+        <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:text="Local Score"
                 android:id="@+id/textView4" android:layout_weight="1" android:textColor="#ffffff"
-                android:textAlignment="center" android:textSize="20sp" style="@style/NormalFont.Bold"/>
+                android:textAlignment="center" android:textSize="20sp"
+                fontPath="@string/futurabold_font"
+                tools:ignored="MissingPrefix"
+        />
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
