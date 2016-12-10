@@ -44,10 +44,16 @@ public class ListFragment extends Fragment {
     private String mParam;
     private ListView listView;
 
+    private FirebaseDatabase database;
+    private DatabaseReference ref;
+    private ValueEventListener listener;
+
     private OnFragmentInteractionListener mListener;
 
     public ListFragment() {
         // Required empty public constructor
+        database = FirebaseDatabase.getInstance();
+        ref = database.getReference();
     }
 
     // TODO: Rename and change types and number of parameters
@@ -106,6 +112,12 @@ public class ListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        ref.removeEventListener(listener);
+        super.onDestroy();
+    }
+
     private void setLocalMode() {
         ArrayList<LocalScoreItem> arrayList = new ArrayList<>();
         LocalRankAdapter localRankAdapter = new LocalRankAdapter(getActivity());
@@ -138,8 +150,6 @@ public class ListFragment extends Fragment {
     }
 
     private void setOnline(final String mode) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference();
 
         final ArrayList<OnlineScoreItem> arrayList = new ArrayList<>();
         final OnlineRankAdapter onlineRankAdapter = new OnlineRankAdapter(getActivity());
@@ -147,7 +157,7 @@ public class ListFragment extends Fragment {
         onlineRankAdapter.setTopMode(mode == "top");
         listView.setAdapter(onlineRankAdapter);
 
-        ref.child("scores").orderByPriority().addValueEventListener(new ValueEventListener() {
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, DatabaseScore> map = dataSnapshot.getValue(new GenericTypeIndicator<Map<String, DatabaseScore>>() {
@@ -168,6 +178,9 @@ public class ListFragment extends Fragment {
                     }
                 });
 
+                onlineRankAdapter.setScoreList(new ArrayList<OnlineScoreItem>());
+                mListener.setMyRank(0);
+
                 Thread adIdThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -184,7 +197,7 @@ public class ListFragment extends Fragment {
                                     nextScore = e.getValue().getScore();
                                 }
                                 onlineRankAdapter.add(convertOnlineScore(r, e.getValue()));
-                                if (id == e.getKey()) {
+                                if (id.compareTo(e.getKey().toString()) == 0) {
                                     mListener.setMyRank(r);
                                     onlineRankAdapter.setMyPos(r);
                                 }
@@ -201,7 +214,9 @@ public class ListFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
-        });
+        };
+
+        ref.child("scores").orderByPriority().addValueEventListener(listener);
     }
 
     private OnlineScoreItem convertOnlineScore(int i, DatabaseScore databaseScore) {

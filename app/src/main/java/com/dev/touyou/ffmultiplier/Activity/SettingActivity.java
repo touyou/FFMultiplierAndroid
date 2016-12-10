@@ -44,22 +44,6 @@ public class SettingActivity extends AppCompatActivity {
     public void tappedSaveBtn(View v) {
         name = editText.getText().toString();
         sp.edit().putString("name", name).commit();
-        // 名前変更時にFirebaseも更新
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference ref = database.getReference();
-        Thread adIdThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AdvertisingIdClient.Info adInfo;
-                try {
-                    adInfo = AdvertisingIdClient.getAdvertisingIdInfo(SettingActivity.this);
-                    final String id = adInfo.getId();
-                    ref.child("scores").child(id).child("name").setValue(name);
-                } catch (Exception e) {
-                }
-            }
-        });
-        adIdThread.start();
         finish();
     }
 }
