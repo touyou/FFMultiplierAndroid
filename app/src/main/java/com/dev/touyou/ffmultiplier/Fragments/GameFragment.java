@@ -276,7 +276,7 @@ public class GameFragment extends Fragment {
                     Thread adIdThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            AdvertisingIdClient.Info adInfo = null;
+                            AdvertisingIdClient.Info adInfo;
                             try {
                                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
                                 final String id = adInfo.getId();
@@ -298,7 +298,7 @@ public class GameFragment extends Fragment {
             Thread adIdThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    AdvertisingIdClient.Info adInfo = null;
+                    AdvertisingIdClient.Info adInfo;
                     try {
                         adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
                         final String id = adInfo.getId();
