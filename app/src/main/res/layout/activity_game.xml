@@ -6,9 +6,9 @@
         android:layout_height="match_parent"
         tools:context="com.dev.touyou.ffmultiplier.Activity.GameActivity">
 
-    <fragment android:layout_width="match_parent"
-              android:layout_height="fill_parent"
-              android:name="com.dev.touyou.ffmultiplier.Fragments.GameFragment" android:id="@+id/fragment"
-              android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
-              android:layout_alignParentStart="true"/>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:id="@+id/gameContainer">
+    </LinearLayout>
 </RelativeLayout>

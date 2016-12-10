@@ -50,6 +50,7 @@ public class GameFragment extends Fragment {
     private Button[] numberButton = new Button[16];
     private PopupWindow popupWindow;
     private Context gameActivity;
+    private GameFragmentListener listener;
     private int[] buttonIdList = {
             R.id.zeroButton, R.id.oneButton, R.id.twoButton, R.id.threeButton,
             R.id.fourButton, R.id.fiveButton, R.id.sixButton, R.id.sevenButton,
@@ -81,6 +82,11 @@ public class GameFragment extends Fragment {
     private void onAttachContext(Context context) {
         // 処理
         gameActivity = context;
+        try {
+            listener = (GameFragmentListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnArticleSelectedListener");
+        }
     }
 
     @Override
@@ -143,6 +149,12 @@ public class GameFragment extends Fragment {
         timer = new Timer();
         timerTask = new CountDown();
         timer.schedule(timerTask, 0, 1000);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timer.cancel();
     }
 
     private void tappedNumberBtn(View v) {
@@ -298,6 +310,7 @@ public class GameFragment extends Fragment {
                     }
                 }
             });
+            adIdThread.start();
         }
     }
 
@@ -325,6 +338,7 @@ public class GameFragment extends Fragment {
             popupWindow.dismiss();
         }
         // ここでFragmentを終了する
+        listener.onDestroyActivity();
     }
 
     class CountDown extends TimerTask {
@@ -343,5 +357,10 @@ public class GameFragment extends Fragment {
                 }
             });
         }
+    }
+
+    // Listener
+    public interface GameFragmentListener {
+        void onDestroyActivity();
     }
 }
