@@ -47,6 +47,6 @@
                 android:text="settings"
                 android:id="@+id/button4" android:layout_weight="1" android:background="@android:color/transparent"
                 style="@style/NormalFont"
-        />
+                android:onClick="toSettingView"/>
     </LinearLayout>
 </RelativeLayout>

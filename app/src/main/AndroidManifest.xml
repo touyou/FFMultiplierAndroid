@@ -20,6 +20,8 @@
         </activity>
         <activity android:name=".Activity.GameActivity">
         </activity>
+        <activity android:name=".Activity.SettingActivity">
+        </activity>
     </application>
 
 </manifest>
