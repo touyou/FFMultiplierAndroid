@@ -11,17 +11,29 @@
         tools:context="com.dev.touyou.ffmultiplier.Activity.SettingActivity"
         android:background="@color/colorGrayMain">
 
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:id="@+id/textView2"
+            android:layout_centerHorizontal="true" android:gravity="center"
+            android:textSize="20sp" android:layout_alignParentTop="true" android:textColor="@color/colorBlackMain"
+            fontPath="@string/futurabold_font"
+            tools:ignored="MissingPrefix"
+    />
     <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/nameEditText" android:layout_centerHorizontal="true"
+            android:id="@+id/nameEditText"
             android:hint="name" android:background="#ffffff"
-            android:layout_alignParentTop="true" android:gravity="bottom" android:padding="8dp"/>
-    <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
+            android:gravity="bottom" android:padding="8dp"
+            android:layout_below="@+id/textView2" android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"/>
+    <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="save"
             android:id="@+id/button5" android:layout_centerVertical="true" android:layout_centerHorizontal="true"
-            style="@style/NormalFont" android:background="@color/colorGrayMain"
+            android:background="@color/colorGrayMain"
             android:textColor="@color/colorDarkGray" android:onClick="tappedSaveBtn"/>
 </RelativeLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.dev.touyou.ffmultiplier.Activity.LocalRankActivity"
+        android:background="@color/colorOrangeMain" android:padding="3dp">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Local Score"
+                android:id="@+id/textView4" android:layout_weight="1" android:textColor="#ffffff"
+                android:textAlignment="center" android:textSize="20sp"
+                fontPath="@string/futurabold_font"
+                tools:ignored="MissingPrefix"
+                android:layout_marginTop="10dp"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" android:layout_weight="10" android:id="@+id/localListContainer">
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

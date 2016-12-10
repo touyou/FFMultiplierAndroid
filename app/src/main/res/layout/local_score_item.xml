@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" android:background="@android:color/transparent">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="1">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="1. "
+                android:id="@+id/localRankTextView" android:textColor="#ffffff" android:gravity="center_vertical"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="name"
+                android:id="@+id/localNameTextView" android:textColor="#ffffff" android:gravity="center_vertical"
+        />
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="1">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="date: "
+                android:id="@+id/textView5" android:textColor="#ffffff" android:gravity="center_vertical|right"
+                android:layout_weight="2" />
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="2016/11/11"
+                android:id="@+id/localDateTextView" android:gravity="left|center_vertical" android:layout_weight="4"
+                android:textColor="#ffffff" />
+    </LinearLayout>
+</LinearLayout>

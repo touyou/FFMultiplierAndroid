@@ -13,12 +13,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ShareCompat;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.widget.*;
 import com.dev.touyou.ffmultiplier.CustomClass.FFNumber;
+import com.dev.touyou.ffmultiplier.Model.DatabaseScore;
 import com.dev.touyou.ffmultiplier.Model.ScoreModel;
 import com.dev.touyou.ffmultiplier.R;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -155,6 +154,7 @@ public class GameFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         timer.cancel();
+        listener = null;
     }
 
     private void tappedNumberBtn(View v) {
@@ -184,7 +184,7 @@ public class GameFragment extends Fragment {
         answer += FFNumber.valueOf(ans % 16).toString();
         if (answer.equals(answerStr)) {
             correctCnt++;
-            resultTextView.setText(String.valueOf(correctCnt));
+            resultTextView.setText(String.valueOf(correctCnt * 10));
             Toast.makeText(gameActivity, "ACCEPTED", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(gameActivity, "FAILED", Toast.LENGTH_SHORT).show();
@@ -257,6 +257,7 @@ public class GameFragment extends Fragment {
         } else {
             updateHighScore(correctCnt * 10);
         }
+        listener.loadAds();
     }
 
     private void updateHighScore(final int score) {
@@ -280,10 +281,8 @@ public class GameFragment extends Fragment {
                             try {
                                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
                                 final String id = adInfo.getId();
-                                Map<String, Object> map = new HashMap<>();
-                                map.put("name", userName);
-                                map.put("score", score);
-                                ref.child("scores").child(id).setValue(map);
+                                DatabaseScore databaseScore = new DatabaseScore(userName, score);
+                                ref.child("scores").child(id).setValue(databaseScore);
                             } catch (Exception e) {
                             }
                         }
@@ -302,10 +301,8 @@ public class GameFragment extends Fragment {
                     try {
                         adInfo = AdvertisingIdClient.getAdvertisingIdInfo(gameActivity);
                         final String id = adInfo.getId();
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("name", userName);
-                        map.put("score", score);
-                        ref.child("scores").child(id).setValue(map);
+                        DatabaseScore databaseScore = new DatabaseScore(userName, score);
+                        ref.child("scores").child(id).setValue(databaseScore);
                     } catch (Exception e) {
                     }
                 }
@@ -316,7 +313,7 @@ public class GameFragment extends Fragment {
 
     private void tappedShareBtn(View v) {
         String articleURL = "PlayStoreのURL";
-        String articleTitle = "I got" + String.valueOf(correctCnt * 10)  + "points! Let's play FFMultiplier with me! #FFMultiplier";
+        String articleTitle = "I got " + String.valueOf(correctCnt * 10)  + " points! Let's play FFMultiplier with me! #FFMultiplier";
         String sharedText = articleTitle + " " + articleURL;
 
         // builderの生成 ShareCompat.IntentBuilder.from(Context context);
@@ -362,5 +359,6 @@ public class GameFragment extends Fragment {
     // Listener
     public interface GameFragmentListener {
         void onDestroyActivity();
+        void loadAds();
     }
 }

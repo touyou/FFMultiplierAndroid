@@ -3,4 +3,9 @@
     <string name="dseg_font">DSEG7ClassicMini-Bold.ttf</string>
     <string name="futura_font">FuturaExtended.ttf</string>
     <string name="futurabold_font">Futura Koyu.ttf</string>
+    <string name="top_banner_ads_id">ca-app-pub-2853999389157478/6287451668</string>
+    <string name="interst_ads_id">ca-app-pub-2853999389157478/7226448067</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
