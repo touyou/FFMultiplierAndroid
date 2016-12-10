@@ -153,6 +153,7 @@ public class GameFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         timer.cancel();
+        listener = null;
     }
 
     private void tappedNumberBtn(View v) {

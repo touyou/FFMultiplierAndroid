@@ -44,4 +44,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
     }
+
+    public void toLocalView(View v) {
+        Intent intent = new Intent(this, LocalRankActivity.class);
+        startActivity(intent);
+    }
 }

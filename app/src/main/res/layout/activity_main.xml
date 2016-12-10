@@ -34,7 +34,7 @@
                 android:text="local score"
                 android:id="@+id/button2" android:layout_weight="1" android:background="@android:color/transparent"
                 style="@style/NormalFont"
-        />
+                android:onClick="toLocalView"/>
         <com.dev.touyou.ffmultiplier.CustomClass.CustomButton
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -51,9 +51,9 @@
                 android:onClick="toSettingView"/>
         <com.google.android.gms.ads.AdView
                 android:layout_width="match_parent"
-                android:layout_height="0dp" android:id="@+id/mainBanner" android:layout_gravity="center_horizontal"
+                android:layout_height="49dp" android:id="@+id/mainBanner" android:layout_gravity="center_horizontal"
                 ads:adSize="SMART_BANNER"
                 ads:adUnitId="@string/top_banner_ads_id"
-                android:layout_weight="0.8"/>
+        />
     </LinearLayout>
 </RelativeLayout>
