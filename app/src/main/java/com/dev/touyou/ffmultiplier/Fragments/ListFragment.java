@@ -114,7 +114,7 @@ public class ListFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        ref.removeEventListener(listener);
+        if (listener != null) ref.removeEventListener(listener);
         super.onDestroy();
     }
 
@@ -179,7 +179,7 @@ public class ListFragment extends Fragment {
                 });
 
                 onlineRankAdapter.setScoreList(new ArrayList<OnlineScoreItem>());
-                mListener.setMyRank(0);
+                if (mListener != null) mListener.setMyRank(0);
 
                 Thread adIdThread = new Thread(new Runnable() {
                     @Override

@@ -184,7 +184,7 @@ public class GameFragment extends Fragment {
         answer += FFNumber.valueOf(ans % 16).toString();
         if (answer.equals(answerStr)) {
             correctCnt++;
-            resultTextView.setText(String.valueOf(correctCnt));
+            resultTextView.setText(String.valueOf(correctCnt * 10));
             Toast.makeText(gameActivity, "ACCEPTED", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(gameActivity, "FAILED", Toast.LENGTH_SHORT).show();
@@ -313,7 +313,7 @@ public class GameFragment extends Fragment {
 
     private void tappedShareBtn(View v) {
         String articleURL = "PlayStoreのURL";
-        String articleTitle = "I got" + String.valueOf(correctCnt * 10)  + "points! Let's play FFMultiplier with me! #FFMultiplier";
+        String articleTitle = "I got " + String.valueOf(correctCnt * 10)  + " points! Let's play FFMultiplier with me! #FFMultiplier";
         String sharedText = articleTitle + " " + articleURL;
 
         // builderの生成 ShareCompat.IntentBuilder.from(Context context);
