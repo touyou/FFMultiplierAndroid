@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ShareCompat;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.widget.*;
@@ -257,6 +255,7 @@ public class GameFragment extends Fragment {
         } else {
             updateHighScore(correctCnt * 10);
         }
+        listener.loadAds();
     }
 
     private void updateHighScore(final int score) {
@@ -362,5 +361,6 @@ public class GameFragment extends Fragment {
     // Listener
     public interface GameFragmentListener {
         void onDestroyActivity();
+        void loadAds();
     }
 }

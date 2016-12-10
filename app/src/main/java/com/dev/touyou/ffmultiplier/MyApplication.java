@@ -1,6 +1,7 @@
 package com.dev.touyou.ffmultiplier;
 
 import android.app.Application;
+import com.google.android.gms.ads.MobileAds;
 import io.realm.Realm;
 
 /**
@@ -11,5 +12,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Realm.init(this);
+        MobileAds.initialize(this, "ca-app-pub-2853999389157478~5749714867");
     }
 }
