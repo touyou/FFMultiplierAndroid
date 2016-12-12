@@ -109,7 +109,7 @@ public class RankingActivity extends AppCompatActivity implements ListFragment.O
     }
 
     public void shareBtn(View v) {
-        String articleURL = "PlayStoreのURL";
+        String articleURL = "https://play.google.com/store/apps/details?id=com.dev.touyou.ffmultiplier";
         String articleTitle = "My rank is " + (rank == 0 ? "--" : rank) + "! Let's play FFMultiplier with me! #FFMultiplier";
         String sharedText = articleTitle + " " + articleURL;
 
