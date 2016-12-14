@@ -312,7 +312,7 @@ public class GameFragment extends Fragment {
     }
 
     private void tappedShareBtn(View v) {
-        String articleURL = "PlayStoreのURL";
+        String articleURL = "https://play.google.com/store/apps/details?id=com.dev.touyou.ffmultiplier";
         String articleTitle = "I got " + String.valueOf(correctCnt * 10)  + " points! Let's play FFMultiplier with me! #FFMultiplier";
         String sharedText = articleTitle + " " + articleURL;
 
