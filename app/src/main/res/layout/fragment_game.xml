@@ -33,7 +33,7 @@
         <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="✕"
+                android:text="×"
                 android:id="@+id/gameQuitButton"
                 android:layout_weight="1"
                 android:background="@color/colorBlackMain"
@@ -64,7 +64,7 @@
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="✕"
+                android:text="×"
                 android:id="@+id/textView3"
                 android:layout_weight="1"
                 android:gravity="center"
@@ -140,15 +140,13 @@
                 tools:ignored="MissingPrefix"
         />
     </LinearLayout>
-    <GridLayout
+    <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:columnCount="4"
-            android:rowCount="4"
-            android:layout_weight="4">
+            android:layout_height="0dp" android:layout_weight="1">
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="0"
                 android:id="@+id/zeroButton"
                 android:layout_rowWeight="1"
@@ -157,14 +155,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="1"
                 android:id="@+id/oneButton"
                 android:layout_rowWeight="1"
@@ -173,14 +170,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="2"
                 android:id="@+id/twoButton"
                 android:layout_rowWeight="1"
@@ -189,14 +185,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="3"
                 android:id="@+id/threeButton"
                 android:layout_rowWeight="1"
@@ -205,14 +200,18 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="1">
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="4"
                 android:id="@+id/fourButton"
                 android:layout_rowWeight="1"
@@ -221,14 +220,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="5"
                 android:id="@+id/fiveButton"
                 android:layout_rowWeight="1"
@@ -237,14 +235,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="6"
                 android:id="@+id/sixButton"
                 android:layout_rowWeight="1"
@@ -253,14 +250,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="7"
                 android:id="@+id/sevenButton"
                 android:layout_rowWeight="1"
@@ -269,14 +265,18 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="1">
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="8"
                 android:id="@+id/eightButton"
                 android:layout_rowWeight="1"
@@ -285,14 +285,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="9"
                 android:id="@+id/nineButton"
                 android:layout_rowWeight="1"
@@ -301,14 +300,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="A"
                 android:id="@+id/anumButton"
                 android:layout_rowWeight="1"
@@ -317,14 +315,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="B"
                 android:id="@+id/bnumButton"
                 android:layout_rowWeight="1"
@@ -333,14 +330,18 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="1">
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="C"
                 android:id="@+id/cnumButton"
                 android:layout_rowWeight="1"
@@ -349,14 +350,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="D"
                 android:id="@+id/dnumButton"
                 android:layout_rowWeight="1"
@@ -365,14 +365,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="E"
                 android:id="@+id/enumButton"
                 android:layout_rowWeight="1"
@@ -381,14 +380,13 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
+                android:layout_weight="1"/>
         <Button
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:text="F"
                 android:id="@+id/fnumButton"
                 android:layout_rowWeight="1"
@@ -397,10 +395,9 @@
                 android:textColor="@color/colorGraySecond"
                 android:textSize="20sp"
                 android:singleLine="false"
-                android:padding="1dp"
                 android:nestedScrollingEnabled="false"
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
-        />
-    </GridLayout>
+                android:layout_weight="1"/>
+    </LinearLayout>
 </LinearLayout>
