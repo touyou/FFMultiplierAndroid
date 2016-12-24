@@ -7,8 +7,8 @@ android {
         applicationId "com.dev.touyou.ffmultiplier"
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 2
-        versionName "1.0.5"
+        versionCode 3
+        versionName "1.0.8"
     }
     buildTypes {
         release {

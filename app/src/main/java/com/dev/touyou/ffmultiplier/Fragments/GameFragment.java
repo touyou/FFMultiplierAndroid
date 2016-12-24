@@ -183,12 +183,17 @@ public class GameFragment extends Fragment {
         if (ans >= 16) { answer += FFNumber.valueOf(ans / 16).toString(); }
         answer += FFNumber.valueOf(ans % 16).toString();
         if (answer.equals(answerStr)) {
-            correctCnt++;
-            resultTextView.setText(String.valueOf(correctCnt * 10));
-            Toast.makeText(gameActivity, "ACCEPTED", Toast.LENGTH_SHORT).show();
+            correctCnt += 10;
+            Toast toast = Toast.makeText(gameActivity, "ACCEPTED", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 50);
+            toast.show();
         } else {
-            Toast.makeText(gameActivity, "FAILED", Toast.LENGTH_SHORT).show();
+            correctCnt -= 5;
+            Toast toast = Toast.makeText(gameActivity, "FAILED", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 50);
+            toast.show();
         }
+        resultTextView.setText(String.valueOf(correctCnt));
         generateProblem();
     }
 
@@ -205,7 +210,7 @@ public class GameFragment extends Fragment {
         // Realm
         Calendar cal = Calendar.getInstance();
         final ScoreModel scoreModel = new ScoreModel();
-        scoreModel.setScore(correctCnt * 10);
+        scoreModel.setScore(correctCnt);
         scoreModel.setDate(cal.getTime());
         /** for debug
          RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
@@ -221,7 +226,7 @@ public class GameFragment extends Fragment {
         // popupの設定
         View popupView = View.inflate(gameActivity, R.layout.popup_layout, null);
         resultPointTextView = (TextView) popupView.findViewById(R.id.resultPointTextView);
-        resultPointTextView.setText(String.valueOf(correctCnt * 10));
+        resultPointTextView.setText(String.valueOf(correctCnt));
         highScoreView = (TextView) popupView.findViewById(R.id.highScoreView);
         highScoreView.setVisibility(View.INVISIBLE);
         popupView.findViewById(R.id.popupShareButton).setOnClickListener(new View.OnClickListener() {
@@ -250,12 +255,12 @@ public class GameFragment extends Fragment {
         // 最高得点かどうか？
         RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAllSorted("score", Sort.DESCENDING);
         if (results.size() > 0) {
-            if (results.first().getScore() <= correctCnt * 10) {
-                updateHighScore(correctCnt * 10);
+            if (results.first().getScore() <= correctCnt) {
+                updateHighScore(correctCnt);
                 highScoreView.setVisibility(View.VISIBLE);
             }
         } else {
-            updateHighScore(correctCnt * 10);
+            updateHighScore(correctCnt);
         }
         listener.loadAds();
     }
@@ -268,6 +273,7 @@ public class GameFragment extends Fragment {
             LayoutInflater inflater = LayoutInflater.from(gameActivity);
             View dialog = inflater.inflate(R.layout.input_dialog, null);
             final EditText editText = (EditText) dialog.findViewById(R.id.editNameText);
+            editText.setText(sp.getString("name", null));
 
             new AlertDialog.Builder(gameActivity).setTitle("please set your name").setView(dialog).setPositiveButton("ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -313,7 +319,7 @@ public class GameFragment extends Fragment {
 
     private void tappedShareBtn(View v) {
         String articleURL = "https://play.google.com/store/apps/details?id=com.dev.touyou.ffmultiplier";
-        String articleTitle = "I got " + String.valueOf(correctCnt * 10)  + " points! Let's play FFMultiplier with me! #FFMultiplier";
+        String articleTitle = "I got " + String.valueOf(correctCnt)  + " points! Let's play FFMultiplier with me! #FFMultiplier";
         String sharedText = articleTitle + " " + articleURL;
 
         // builderの生成 ShareCompat.IntentBuilder.from(Context context);
