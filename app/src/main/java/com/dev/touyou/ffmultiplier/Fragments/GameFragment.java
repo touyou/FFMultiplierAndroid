@@ -68,7 +68,7 @@ public class GameFragment extends Fragment {
     private final int pointsAccepted = 10;
     private final int pointsFailed = -5;
     private final int pointsCombo = 5;
-    private final int maxComboBonus = 20;
+    private final int maxComboBonus = 15;
     private int combo = 0;
 
     @Override
