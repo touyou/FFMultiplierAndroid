@@ -68,6 +68,7 @@ public class GameFragment extends Fragment {
     private final int pointsAccepted = 10;
     private final int pointsFailed = -5;
     private final int pointsCombo = 5;
+    private final int maxComboBonus = 20;
     private int combo = 0;
 
     @Override
@@ -188,7 +189,7 @@ public class GameFragment extends Fragment {
         if (ans >= 16) { answer += FFNumber.valueOf(ans / 16).toString(); }
         answer += FFNumber.valueOf(ans % 16).toString();
         if (answer.equals(answerStr)) {
-            correctCnt += pointsAccepted + pointsCombo * (combo / 5);
+            correctCnt += pointsAccepted + Math.min(pointsCombo * (combo / 5), maxComboBonus);
             combo++;
             Toast toast = Toast.makeText(gameActivity, "ACCEPTED", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 50);
