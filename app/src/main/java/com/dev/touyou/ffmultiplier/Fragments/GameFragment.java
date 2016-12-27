@@ -65,6 +65,11 @@ public class GameFragment extends Fragment {
     private Handler handler = new Handler();
     private long count = 60;
 
+    private final int pointsAccepted = 10;
+    private final int pointsFailed = -5;
+    private final int pointsCombo = 5;
+    private int combo = 0;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -183,12 +188,14 @@ public class GameFragment extends Fragment {
         if (ans >= 16) { answer += FFNumber.valueOf(ans / 16).toString(); }
         answer += FFNumber.valueOf(ans % 16).toString();
         if (answer.equals(answerStr)) {
-            correctCnt += 10;
+            correctCnt += pointsAccepted + pointsCombo * (combo / 5);
+            combo++;
             Toast toast = Toast.makeText(gameActivity, "ACCEPTED", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 50);
             toast.show();
         } else {
-            correctCnt -= 5;
+            correctCnt += pointsFailed;
+            combo = 0;
             Toast toast = Toast.makeText(gameActivity, "FAILED", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 50);
             toast.show();
