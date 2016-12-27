@@ -45,7 +45,7 @@ public class GameFragment extends Fragment {
     private TextView highScoreView;
     private Button deleteButton;
     private Button doneButton;
-    private Button cancelButton;
+    private ImageButton cancelButton;
     private Button[] numberButton = new Button[16];
     private PopupWindow popupWindow;
     private Context gameActivity;
@@ -121,7 +121,7 @@ public class GameFragment extends Fragment {
                 tappedDoneBtn(view);
             }
         });
-        cancelButton = (Button) view.findViewById(R.id.gameQuitButton);
+        cancelButton = (ImageButton) view.findViewById(R.id.gameQuitButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

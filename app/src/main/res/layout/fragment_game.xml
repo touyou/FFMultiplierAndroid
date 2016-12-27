@@ -30,17 +30,13 @@
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
         />
-        <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="x"
-                android:id="@+id/gameQuitButton"
-                android:layout_weight="1"
-                android:background="@color/colorBlackMain"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
-                android:textAlignment="center"
-                android:textStyle="bold"
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:id="@+id/gameQuitButton"
+            android:layout_weight="1"
+            android:background="@color/colorBlackMain"
         />
     </LinearLayout>
     <LinearLayout
@@ -61,15 +57,13 @@
                 fontPath="@string/dseg_font"
                 tools:ignored="MissingPrefix"
         />
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="x"
-                android:id="@+id/textView3"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="40sp"
-                android:textColor="@color/colorBlackMain"
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_close_black"
+            android:tint="@color/colorBlackMain"
+            android:layout_weight="1"
+            android:gravity="center"
         />
         <TextView
                 android:layout_width="0dp"
