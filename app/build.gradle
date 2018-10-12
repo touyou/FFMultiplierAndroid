@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.dev.touyou.ffmultiplier"
         minSdkVersion 21
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 4
         versionName "1.1.0"
     }
@@ -22,15 +22,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.google.firebase:firebase-ads:10.0.1'
-    compile 'com.google.firebase:firebase-database:10.0.1'
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.google.firebase:firebase-ads:10.0.1'
+    implementation 'com.google.firebase:firebase-database:10.0.1'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'

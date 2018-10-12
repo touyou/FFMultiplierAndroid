@@ -59,7 +59,7 @@ class GameFragment : Fragment() {
     private var timer: Timer? = null
     private var timerTask: CountDown? = null
     private val handler = Handler()
-    private var count: Long = 60
+    private var count: Int = 60
 
     private val pointsAccepted = 10
     private val pointsFailed = -5
@@ -115,8 +115,8 @@ class GameFragment : Fragment() {
         // Number Button
         for (i in 0..15) {
             numberButton[i] = view.findViewById(buttonIdList[i]) as Button
-            numberButton[i].setTag(i)
-            numberButton[i].setOnClickListener(View.OnClickListener { view -> tappedNumberBtn(view) })
+            numberButton[i]?.setTag(i)
+            numberButton[i]?.setOnClickListener(View.OnClickListener { view -> tappedNumberBtn(view) })
         }
 
         popupWindow = PopupWindow(gameActivity)
@@ -199,8 +199,11 @@ class GameFragment : Fragment() {
          * Realm.deleteRealm(realmConfig);
          * Realm realm = Realm.getInstance(realmConfig); */
         val realm = Realm.getDefaultInstance()
-        realm.executeTransactionAsync(object : Realm.Transaction() {
-            fun execute(realm: Realm) {
+        realm.executeTransactionAsync(object : Realm.Transaction {
+            init {
+            }
+
+            override fun execute(realm: Realm) {
                 realm.copyToRealm(scoreModel)
             }
         })
@@ -210,8 +213,8 @@ class GameFragment : Fragment() {
         resultPointTextView!!.text = correctCnt.toString()
         highScoreView = popupView.findViewById(R.id.highScoreView) as TextView
         highScoreView!!.visibility = View.INVISIBLE
-        popupView.findViewById(R.id.popupShareButton).setOnClickListener { view -> tappedShareBtn(view) }
-        popupView.findViewById(R.id.exitButton).setOnClickListener { view -> tappedExitBtn(view) }
+        popupView.findViewById<android.widget.Button>(R.id.popupShareButton).setOnClickListener { view -> tappedShareBtn(view) }
+        popupView.findViewById<android.widget.Button>(R.id.exitButton).setOnClickListener { view -> tappedExitBtn(view) }
         popupWindow!!.contentView = popupView
         popupWindow!!.setBackgroundDrawable(ColorDrawable(Color.WHITE))
         popupWindow!!.elevation = 10f
@@ -224,9 +227,9 @@ class GameFragment : Fragment() {
         popupWindow!!.height = height.toInt()
         popupWindow!!.showAtLocation(deleteButton, Gravity.CENTER, 0, 0)
         // 最高得点かどうか？
-        val results = realm.where(ScoreModel::class.java).findAllSorted("score", Sort.DESCENDING)
-        if (results.size() > 0) {
-            if (results.first().getScore() <= correctCnt) {
+        val results = realm.where(ScoreModel::class.java).sort("score", Sort.DESCENDING).findAll()
+        if (results.size > 0) {
+            if (results.first()!!.score <= correctCnt) {
                 updateHighScore(correctCnt)
                 highScoreView!!.visibility = View.VISIBLE
             }

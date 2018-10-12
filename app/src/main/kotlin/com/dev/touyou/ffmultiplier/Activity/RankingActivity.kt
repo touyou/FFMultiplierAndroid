@@ -35,7 +35,7 @@ class RankingActivity : AppCompatActivity(), ListFragment.OnFragmentInteractionL
     private var rankTextView: TextView? = null
     private var rank = 0
 
-    protected fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ranking)
 
@@ -47,15 +47,15 @@ class RankingActivity : AppCompatActivity(), ListFragment.OnFragmentInteractionL
         rankTextView = findViewById(R.id.yourRankTextView) as TextView
     }
 
-    protected fun attachBaseContext(newBase: Context) {
+    override protected fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 
     fun registerBtn(v: View) {
         val realm = Realm.getDefaultInstance()
-        val results = realm.where(ScoreModel::class.java).findAllSorted("score", Sort.DESCENDING)
-        if (results.size() === 0) return
-        val score = results.first().getScore()
+        val results = realm.where(ScoreModel::class.java).sort("score", Sort.DESCENDING).findAll()
+        if (results.size === 0) return
+        val score = results.first()!!.score
         val sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
         val database = FirebaseDatabase.getInstance()
         val ref = database.getReference()

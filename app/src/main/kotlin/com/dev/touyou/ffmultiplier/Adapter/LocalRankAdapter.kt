@@ -22,6 +22,7 @@ class LocalRankAdapter(internal var context: Context) : BaseAdapter() {
 
     init {
         this.layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        this.scoreList = java.util.ArrayList<LocalScoreItem>()
     }
 
     fun setScoreList(scoreList: ArrayList<LocalScoreItem>) {

@@ -17,7 +17,7 @@
                 android:text="Local Score"
                 android:id="@+id/textView4" android:layout_weight="1" android:textColor="#ffffff"
                 android:textAlignment="center" android:textSize="20sp"
-                fontPath="@string/futurabold_font"
+                android:fontFamily="@string/futura_font"
                 tools:ignored="MissingPrefix"
                 android:layout_marginTop="10dp"/>
         <LinearLayout
@@ -31,7 +31,7 @@
                 android:text="delete"
                 android:id="@+id/deleteScoreBtn" android:layout_alignParentBottom="true" android:layout_alignParentStart="true"
                 android:layout_weight="1" android:background="@android:color/transparent"
-                fontPath="@string/futura_font"
+                android:fontFamily="@string/futurabold_font"
                 android:onClick="deleteRankBtn"/>
     </LinearLayout>
 </RelativeLayout>

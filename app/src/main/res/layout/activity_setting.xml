@@ -18,7 +18,7 @@
             android:id="@+id/textView2"
             android:layout_centerHorizontal="true" android:gravity="center"
             android:textSize="20sp" android:layout_alignParentTop="true" android:textColor="@color/colorBlackMain"
-            fontPath="@string/futurabold_font"
+            android:fontFamily="@string/futura_font"
             tools:ignored="MissingPrefix"
     />
     <EditText

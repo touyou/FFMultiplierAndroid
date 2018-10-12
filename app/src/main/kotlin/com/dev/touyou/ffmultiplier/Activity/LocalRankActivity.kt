@@ -29,7 +29,7 @@ class LocalRankActivity : AppCompatActivity(), ListFragment.OnFragmentInteractio
 
     private var listFragment: ListFragment? = null
 
-    protected fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_local_rank)
 
@@ -39,7 +39,7 @@ class LocalRankActivity : AppCompatActivity(), ListFragment.OnFragmentInteractio
         transaction.commit()
     }
 
-    protected fun attachBaseContext(newBase: Context) {
+    override protected fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 

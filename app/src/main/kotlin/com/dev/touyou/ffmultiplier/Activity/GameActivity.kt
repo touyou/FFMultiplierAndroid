@@ -18,7 +18,7 @@ class GameActivity : AppCompatActivity(), GameFragment.GameFragmentListener {
     private var interstitialAd: InterstitialAd? = null
     private val handler = Handler()
 
-    protected fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
@@ -35,7 +35,7 @@ class GameActivity : AppCompatActivity(), GameFragment.GameFragmentListener {
         adThread.start()
     }
 
-    protected fun attachBaseContext(newBase: Context) {
+    override protected fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 

@@ -39,7 +39,7 @@ class ListFragment : Fragment() {
 
     // TODO: Rename and change types of parameters
     private var mParam: String? = null
-    var listView: ListView
+    var listView: ListView? = null
 
     private val database: FirebaseDatabase
     private val ref: DatabaseReference
@@ -53,20 +53,20 @@ class ListFragment : Fragment() {
         ref = database.getReference()
     }
 
-    fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (getArguments() != null) {
             mParam = getArguments().getString(ARG_PARAM)
         }
     }
 
-    fun onCreateView(inflater: LayoutInflater, container: ViewGroup,
-                     savedInstanceState: Bundle): View {
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                     savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false)
+        return inflater!!.inflate(R.layout.fragment_list, container, false)
     }
 
-    fun onAttach(context: Context) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
             mListener = context
@@ -75,10 +75,10 @@ class ListFragment : Fragment() {
         }
     }
 
-    fun onViewCreated(view: View, savedInstanceState: Bundle) {
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listView = view.findViewById(R.id.listView) as ListView
+        listView = view!!.findViewById(R.id.listView) as ListView
 
         when (mParam) {
             "local_mode" -> setLocalMode()
@@ -89,7 +89,7 @@ class ListFragment : Fragment() {
         }
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
         if (listener != null) ref.removeEventListener(listener)
         super.onDestroy()
     }
@@ -98,20 +98,20 @@ class ListFragment : Fragment() {
         val arrayList = ArrayList<LocalScoreItem>()
         val localRankAdapter = LocalRankAdapter(getActivity())
         localRankAdapter.setScoreList(arrayList)
-        listView.adapter = localRankAdapter
+        listView!!.adapter = localRankAdapter
 
         val realm = Realm.getDefaultInstance()
-        val results = realm.where(ScoreModel::class.java).findAllSorted("score", Sort.DESCENDING)
-        if (results.size() > 0) {
-            var nowValue = results.first()
+        val results = realm.where(ScoreModel::class.java).sort("score", Sort.DESCENDING).findAll()
+        if (results.size > 0) {
+            var nowValue = results.first()!!
             arrayList.add(convertLocalScore(1, nowValue))
             var r = 1
-            for (i in 1..Math.min(50, results.size()) - 1) {
-                if (results.get(i).getScore() !== nowValue.getScore()) {
+            for (i in 1..Math.min(50, results.size) - 1) {
+                if (results.get(i)!!.score !== nowValue.score) {
                     r = i + 1
-                    nowValue = results.get(i)
+                    nowValue = results.get(i) as ScoreModel
                 }
-                arrayList.add(convertLocalScore(r, results.get(i)))
+                arrayList.add(convertLocalScore(r, results.get(i)!!))
             }
         }
         localRankAdapter.notifyDataSetChanged()
@@ -131,21 +131,21 @@ class ListFragment : Fragment() {
         val onlineRankAdapter = OnlineRankAdapter(getActivity())
         onlineRankAdapter.setScoreList(arrayList)
         onlineRankAdapter.setTopMode(mode === "top")
-        listView.adapter = onlineRankAdapter
+        listView!!.adapter = onlineRankAdapter
 
-        listener = object : ValueEventListener() {
-            fun onDataChange(dataSnapshot: DataSnapshot) {
+        listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val map = dataSnapshot.getValue(object : GenericTypeIndicator<Map<String, DatabaseScore>>() {
-                    fun hashCode(): Int {
+                    override fun hashCode(): Int {
                         return super.hashCode()
                     }
                 })
                 // Map.Entryのリストを作成
-                val entries = ArrayList<Entry<String, DatabaseScore>>(map.entries)
+                val entries = ArrayList<Map.Entry<String, DatabaseScore>>(map.entries)
                 // 比較用
-                Collections.sort<Entry<String, DatabaseScore>>(entries) { o1, o2 ->
-                    val o2score = Integer.valueOf(o2.value.getScore())
-                    val o1score = Integer.valueOf(o1.value.getScore())
+                Collections.sort<Map.Entry<String, DatabaseScore>>(entries) { o1, o2 ->
+                    val o2score = Integer.valueOf(o2.value.score)
+                    val o1score = Integer.valueOf(o1.value.score)
                     o2score!!.compareTo(o1score)
                 }
 
@@ -161,9 +161,9 @@ class ListFragment : Fragment() {
                         var pos = 0
                         var nextScore = -10
                         for (e in entries) {
-                            if (nextScore != e.value.getScore()) {
+                            if (nextScore != e.value.score) {
                                 r = pos + 1
-                                nextScore = e.value.getScore()
+                                nextScore = e.value.score
                             }
                             onlineRankAdapter.add(convertOnlineScore(r, e.value))
                             if (id.compareTo(e.key.toString()) == 0) {
@@ -178,7 +178,7 @@ class ListFragment : Fragment() {
                 adIdThread.start()
             }
 
-            fun onCancelled(databaseError: DatabaseError) {
+            override fun onCancelled(databaseError: DatabaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
@@ -194,7 +194,7 @@ class ListFragment : Fragment() {
         return ret
     }
 
-    fun onDetach() {
+    override fun onDetach() {
         super.onDetach()
         mListener = null
     }

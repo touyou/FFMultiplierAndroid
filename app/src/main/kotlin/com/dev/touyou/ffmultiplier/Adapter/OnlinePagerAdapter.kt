@@ -10,7 +10,7 @@ import com.dev.touyou.ffmultiplier.Fragments.ListFragment
  */
 class OnlinePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    fun getItem(position: Int): Fragment? {
+    override fun getItem(position: Int): Fragment? {
         when (position) {
             0 -> {
                 val topListFragment = ListFragment.newInstance("online_top")
@@ -24,10 +24,11 @@ class OnlinePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         return null
     }
 
-    val count: Int
-        get() = 2
+    override fun getCount(): Int {
+        return 2
+    }
 
-    fun getPageTitle(position: Int): CharSequence {
+    override fun getPageTitle(position: Int): CharSequence {
         if (position == 0) {
             return "Top50"
         } else {

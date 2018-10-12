@@ -10,7 +10,9 @@ class DatabaseScore {
     var name: String
     var score: Int = 0
 
-    constructor() {}
+    constructor() {
+        this.name=""
+    }
 
     constructor(name: String, score: Int) {
         this.name = name

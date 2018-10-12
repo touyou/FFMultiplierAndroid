@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     private var adView: AdView? = null
     private val handler = Handler()
 
-    protected fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         adView = findViewById(R.id.mainBanner) as AdView
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         adThread.start()
     }
 
-    protected fun attachBaseContext(newBase: Context) {
+    override protected fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase))
     }
 
