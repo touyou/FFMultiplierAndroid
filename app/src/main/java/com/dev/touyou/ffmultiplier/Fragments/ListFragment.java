@@ -125,7 +125,7 @@ public class ListFragment extends Fragment {
         listView.setAdapter(localRankAdapter);
 
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAllSorted("score", Sort.DESCENDING);
+        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAll().sort("score", Sort.DESCENDING);
         if (results.size() > 0) {
             ScoreModel nowValue = results.first();
             arrayList.add(convertLocalScore(1, nowValue));

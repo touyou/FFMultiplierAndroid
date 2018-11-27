@@ -18,7 +18,7 @@
             android:id="@+id/textView2"
             android:layout_centerHorizontal="true" android:gravity="center"
             android:textSize="20sp" android:layout_alignParentTop="true" android:textColor="@color/colorBlackMain"
-            fontPath="@string/futurabold_font"
+            android:fontFamily="@font/futura_bold"
             tools:ignored="MissingPrefix"
     />
     <EditText
@@ -29,11 +29,26 @@
             android:gravity="bottom" android:padding="8dp"
             android:layout_below="@+id/textView2" android:layout_alignParentStart="true"
             android:layout_marginTop="10dp"/>
+
     <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="save"
-            android:id="@+id/button5" android:layout_centerVertical="true" android:layout_centerHorizontal="true"
-            android:background="@color/colorGrayMain"
-            android:textColor="@color/colorDarkGray" android:onClick="tappedSaveBtn"/>
+        android:id="@+id/button5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/colorGrayMain"
+        android:onClick="tappedSaveBtn"
+        android:text="save"
+        android:textColor="@color/colorDarkGray" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="201dp"
+        android:background="@color/colorGrayMain"
+        android:onClick="tappedPrivacyPolicy"
+        android:text="Privacy Policy"
+        android:textColor="@color/colorDarkGray" />
 </RelativeLayout>

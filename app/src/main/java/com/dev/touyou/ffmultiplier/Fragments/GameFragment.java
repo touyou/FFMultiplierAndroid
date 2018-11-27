@@ -261,7 +261,7 @@ public class GameFragment extends Fragment {
         popupWindow.setHeight((int) height);
         popupWindow.showAtLocation(deleteButton, Gravity.CENTER, 0, 0);
         // 最高得点かどうか？
-        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAllSorted("score", Sort.DESCENDING);
+        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAll().sort("score", Sort.DESCENDING);
         if (results.size() > 0) {
             if (results.first().getScore() <= correctCnt) {
                 updateHighScore(correctCnt);

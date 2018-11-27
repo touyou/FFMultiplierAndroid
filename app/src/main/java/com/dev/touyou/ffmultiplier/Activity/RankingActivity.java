@@ -55,7 +55,7 @@ public class RankingActivity extends AppCompatActivity implements ListFragment.O
 
     public void registerBtn(View v) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAllSorted("score", Sort.DESCENDING);
+        RealmResults<ScoreModel> results = realm.where(ScoreModel.class).findAll().sort("score", Sort.DESCENDING);
         if (results.size() == 0) return;
         final int score = results.first().getScore();
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

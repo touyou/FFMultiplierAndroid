@@ -10,6 +10,7 @@ import com.dev.touyou.ffmultiplier.Fragments.GameFragment;
 import com.dev.touyou.ffmultiplier.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class GameActivity extends AppCompatActivity implements GameFragment.GameFragmentListener {

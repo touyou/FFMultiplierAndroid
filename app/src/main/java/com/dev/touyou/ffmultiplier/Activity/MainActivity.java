@@ -9,8 +9,8 @@ import android.view.View;
 import com.dev.touyou.ffmultiplier.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity {
 
