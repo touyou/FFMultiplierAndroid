@@ -87,7 +87,12 @@ public class OnlineRankAdapter extends BaseAdapter {
             score = scoreList.get(i + myPos - 25);
         }
 
-        ((TextView) view.findViewById(R.id.onlineNameTextView)).setText(score.getName());
+        String name = score.getName();
+        if (name == null || name.length() == 0) {
+            name = "No Name";
+        }
+
+        ((TextView) view.findViewById(R.id.onlineNameTextView)).setText(name);
         ((TextView) view.findViewById(R.id.onlinePointTextView)).setText(score.getScore()+" points");
         ((TextView) view.findViewById(R.id.onlineRankTextView)).setText(score.getRank()+". ");
 

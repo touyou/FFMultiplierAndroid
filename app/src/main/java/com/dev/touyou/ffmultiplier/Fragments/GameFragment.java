@@ -277,7 +277,7 @@ public class GameFragment extends Fragment {
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(gameActivity);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference();
-        if (sp.getString("name", null) == null) {
+        if (sp.getString("name", null) == null || sp.getString("name", null).length() == 0) {
             LayoutInflater inflater = LayoutInflater.from(gameActivity);
             View dialog = inflater.inflate(R.layout.input_dialog, null);
             final EditText editText = (EditText) dialog.findViewById(R.id.editNameText);

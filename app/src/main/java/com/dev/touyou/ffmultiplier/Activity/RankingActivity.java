@@ -61,7 +61,7 @@ public class RankingActivity extends AppCompatActivity implements ListFragment.O
         final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference();
-        if (sp.getString("name", null) == null) {
+        if (sp.getString("name", null) == null || sp.getString("name", null).length() == 0) {
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             View dialog = inflater.inflate(R.layout.input_dialog, null);
             final EditText editText = (EditText) dialog.findViewById(R.id.editNameText);
