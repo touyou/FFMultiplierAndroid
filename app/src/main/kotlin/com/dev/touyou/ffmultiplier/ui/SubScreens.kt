@@ -74,7 +74,7 @@ private fun FFScaffold(
                     IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Close") }
                 },
                 actions = { actions() },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = background,
                     titleContentColor = titleColor,
                     navigationIconContentColor = titleColor,
