@@ -158,11 +158,9 @@ fun OnlineRankingScreen(onClose: () -> Unit) {
         ranking = app.rankingService.fetchRanking()
     }
 
-    fun registerAndReload(name: String) {
-        scope.launch {
-            app.scoreStore.highScore()?.let { app.rankingService.register(name, it) }
-            reload()
-        }
+    suspend fun registerAndReload(name: String) {
+        app.scoreStore.highScore()?.let { app.rankingService.register(name, it) }
+        reload()
     }
 
     LaunchedEffect(Unit) { reload() }
@@ -215,8 +213,10 @@ fun OnlineRankingScreen(onClose: () -> Unit) {
                 askName = false
                 val name = normalizedName(raw)
                 if (name.isNotEmpty()) {
-                    scope.launch { app.scoreStore.setPlayerName(name) }
-                    registerAndReload(name)
+                    scope.launch {
+                        app.scoreStore.setPlayerName(name)
+                        registerAndReload(name)
+                    }
                 }
             },
             onDismiss = { askName = false },
