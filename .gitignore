@@ -42,3 +42,7 @@ captures/
 
 # Keystore files
 *.jks
+
+# Release signing
+keystore.properties
+*.keystore
