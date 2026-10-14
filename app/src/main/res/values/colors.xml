@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorGreenMain">#85bf5d</color>
-    <color name="colorOrangeMain">#b97c50</color>
-    <color name="colorRedMain">#b33737</color>
-    <color name="colorCreamMain">#f9f8f5</color>
-    <color name="colorGrayMain">#efeff4</color>
-    <color name="colorDarkGray">#686868</color>
-    <color name="colorBlackSecond">#333333</color>
-    <color name="colorBlackMain">#111111</color>
-    <color name="colorGraySecond">#bbbbbb</color>
+    <!-- iOS 版 Asset カタログ FFColors と同じ値。ダーク側は values-night -->
+    <color name="ff_black_background">#111111</color>
+    <color name="ff_black_reversible">#000000</color>
+    <color name="ff_brown">#B97C50</color>
+    <color name="ff_dark_gray">#676767</color>
+    <color name="ff_gray">#BBBBBB</color>
+    <color name="ff_green">#85BF5D</color>
+    <color name="ff_green_background">#85BF5D</color>
+    <color name="ff_light_gray_background">#333333</color>
+    <color name="ff_red">#B33737</color>
+    <color name="ff_setting_gray">#EFEFF4</color>
+    <color name="ff_white">#F9F8F5</color>
+    <color name="ff_white_background">#FFFFFF</color>
 </resources>

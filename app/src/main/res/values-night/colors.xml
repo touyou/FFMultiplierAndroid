@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ff_black_background">#1A1A1A</color>
+    <color name="ff_black_reversible">#FFFFFF</color>
+    <color name="ff_brown">#875B3A</color>
+    <color name="ff_dark_gray">#999999</color>
+    <color name="ff_gray">#EDEDED</color>
+    <color name="ff_green">#A8F276</color>
+    <color name="ff_green_background">#618C44</color>
+    <color name="ff_light_gray_background">#000000</color>
+    <color name="ff_red">#E64749</color>
+    <color name="ff_setting_gray">#BEBEC2</color>
+    <color name="ff_white">#C7C6C4</color>
+    <color name="ff_white_background">#000000</color>
+</resources>
