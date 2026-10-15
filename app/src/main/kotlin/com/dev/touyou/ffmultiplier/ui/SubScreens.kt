@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -185,7 +186,10 @@ fun OnlineRankingScreen(onClose: () -> Unit) {
             Tab(selected = !isTop, onClick = { isTop = false }, text = { Text("Nearby") })
         }
         val shown = if (isTop) ranking.entries.take(50) else windowAround(ranking.entries, ranking.myIndex)
-        ScoreList(shown, Modifier.weight(1f).padding(top = 16.dp)) { "${it.rank}. ${it.score} points\n\t ${it.name}" }
+        // タブごとにスクロール位置を持たせる(切り替えても前のタブの位置のまま残らないように)
+        key(isTop) {
+            ScoreList(shown, Modifier.weight(1f).padding(top = 16.dp)) { "${it.rank}. ${it.score} points\n\t ${it.name}" }
+        }
         Text(
             "Your Rank: ${ranking.myRank}",
             fontFamily = FFFont.futuraMedium,
