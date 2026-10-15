@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -50,9 +52,14 @@ fun FFButton(
         onClick = onClick,
         modifier = modifier,
         colors = if (prominent) {
-            ButtonDefaults.buttonColors(containerColor = tint, contentColor = Color.White)
+            // ダークの ff_green は明るいので白文字だと読めない。onPrimary はダークで黒になる
+            ButtonDefaults.buttonColors(containerColor = tint, contentColor = MaterialTheme.colorScheme.onPrimary)
         } else {
-            ButtonDefaults.buttonColors(containerColor = tint.copy(alpha = 0.18f), contentColor = tint)
+            // 半透明のままだとダークの明るい背景(ff_white)に溶けるので、ff_white_background の上で不透明にする
+            ButtonDefaults.buttonColors(
+                containerColor = tint.copy(alpha = 0.18f).compositeOver(FFColor.whiteBackground),
+                contentColor = tint,
+            )
         },
         contentPadding = ButtonDefaults.ContentPadding,
     ) {

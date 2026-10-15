@@ -53,12 +53,11 @@ class RankingService(private val context: Context, private val store: ScoreStore
     }
 
     suspend fun fetchRanking(): RankedResult = coroutineScope {
-        val uid = async { signedInUserId() }
-        val current = async { rows(PATH) }
         val legacy = async { rows(LEGACY_PATH) }
         val legacyId = async { legacyDeviceId() }
-        val myUid = uid.await()
-        val currentRows = current.await()
+        // scores_v2 の read は auth != null。初回はサインインを待たないと Permission denied で空になる
+        val myUid = signedInUserId()
+        val currentRows = rows(PATH)
         val hasCurrentRecord = myUid != null && currentRows.any { it.key == myUid }
         val legacyKey = legacyId.await()
         // 登録し直した端末の旧レコードがまだ残っていても二重に並べない
