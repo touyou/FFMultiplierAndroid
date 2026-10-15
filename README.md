@@ -23,3 +23,11 @@
 ## バージョン
 
 `gradle.properties` の `FF_VERSION_CODE` / `FF_VERSION_NAME` を上げる。Play に公開済みの最後は Java 版 1.3.0(versionCode 6)。
+
+## 人間向け TODO
+
+- [ ] **アップロード鍵の所在を確認する**。Play に 1.3.0(versionCode 6)を出したときの鍵が見つかっていない
+  (旧チェックアウトにも `*.jks` / `*.keystore` は無い)。
+  - Play アプリ署名が有効なら、Play Console の「アプリの完全性」からアップロード鍵のリセットを申請し、
+    新しい鍵で `keystore.properties` を作る
+  - Play アプリ署名が無効で元の鍵も無い場合は、同じパッケージ名で更新を出せない。別パッケージで出し直すかを判断する
