@@ -1,3 +1,5 @@
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
+import com.github.triplet.gradle.androidpublisher.ResolutionStrategy
 import java.util.Properties
 
 plugins {
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.play.publisher)
 }
 
 // リリース署名の実体(keystore.properties + keystore 本体)はコミットしない。雛形は keystore.properties.example。
@@ -15,6 +18,9 @@ val keystoreProperties = Properties().apply {
     }
 }
 val hasReleaseSigning = keystorePropertiesFile.exists()
+
+// Play Developer API のサービスアカウント鍵。コミットせず、CI(android-release.yml)が書き出す
+val playServiceAccountFile = rootProject.file("play-service-account.json")
 
 android {
     namespace = "com.dev.touyou.ffmultiplier"
@@ -62,6 +68,19 @@ android {
 
     buildFeatures {
         compose = true
+    }
+}
+
+// production への push で内部テストトラックへ上げる。versionCode は Play Console の最新値から自動採番する
+play {
+    track.set("internal")
+    releaseStatus.set(ReleaseStatus.COMPLETED)
+    resolutionStrategy.set(ResolutionStrategy.AUTO)
+    defaultToAppBundles.set(true)
+    // AUTO の採番は assembleRelease にも差し込まれ、鍵が無いと失敗する。鍵の無い環境では GPP ごと無効にする
+    enabled.set(playServiceAccountFile.exists())
+    if (playServiceAccountFile.exists()) {
+        serviceAccountCredentials.set(playServiceAccountFile)
     }
 }
 

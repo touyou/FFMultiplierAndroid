@@ -46,3 +46,6 @@ captures/
 # Release signing
 keystore.properties
 *.keystore
+
+# Play Developer API のサービスアカウント鍵(CI が書き出す)
+play-service-account.json
