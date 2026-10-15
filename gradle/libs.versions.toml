@@ -12,6 +12,7 @@ firebaseBom = "34.16.0"
 playServicesAds = "25.4.0"
 playServicesAdsIdentifier = "18.2.0"
 googleServices = "4.5.0"
+playPublisher = "4.0.0"
 junit = "4.13.2"
 
 [libraries]
@@ -42,3 +43,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+play-publisher = { id = "com.github.triplet.play", version.ref = "playPublisher" }

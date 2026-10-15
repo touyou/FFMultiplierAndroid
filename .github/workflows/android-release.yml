@@ -1,0 +1,69 @@
+name: Android Release (Play Console internal test)
+
+# graphica の android-release.yml と同じ構成。production への push を契機に内部テストへ上げる。
+on:
+  push:
+    branches: [production]
+    paths:
+      - "app/**"
+      - "gradle/**"
+      - "*.gradle.kts"
+      - "gradle.properties"
+      - ".github/workflows/android-release.yml"
+
+# 同時に複数リリースが走ると Play Console 側の versionCode 自動採番(resolutionStrategy AUTO)が
+# 競合しうるため、同一ブランチの新しい push を優先し古い実行はキャンセルする。
+concurrency:
+  group: android-release-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # 既定の `packages` は `tools platform-tools` だが、`tools`(旧 SDK Tools)は
+      # Google が SDK リポジトリから削除済みで、sdkmanager が Failed to find package で
+      # 落ちる。v4 でも既定値は同じなのでアクションを上げても直らない。
+      # AGP は build-tools / platforms を自分で取得するので platform-tools だけで足りる。
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Write release signing config
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > upload-keystore.jks
+          cat > keystore.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          EOF
+
+      - name: Write Play Developer API credentials
+        env:
+          PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON }}
+        run: echo "$PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON" > play-service-account.json
+
+      - name: Publish to internal test track
+        run: ./gradlew :app:publishReleaseBundle --stacktrace
+
+      - name: Clean up secrets
+        if: always()
+        run: rm -f upload-keystore.jks keystore.properties play-service-account.json

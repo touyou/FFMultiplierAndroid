@@ -22,7 +22,17 @@
 
 ## バージョン
 
-`gradle.properties` の `FF_VERSION_CODE` / `FF_VERSION_NAME` を上げる。Play に公開済みの最後は Java 版 1.3.0(versionCode 6)。
+`gradle.properties` の `FF_VERSION_NAME` を上げる。CI から Play に上げるときの versionCode は Play Console の最新値から
+自動で採番されるので、`FF_VERSION_CODE` は手元ビルド用。Play に公開済みの最後は Java 版 1.3.0(versionCode 6)。
+
+## リリース(graphica と同じ構成)
+
+- `production` ブランチへの push で `.github/workflows/android-release.yml` が署名済み AAB を作り、内部テストトラックへ上げる
+- 内部テストで確認したら、Actions の「Android Promote」を手動で実行して製品版へ上げる
+  (`promote` = 段階公開、`complete` = 100% に、`halt` = 停止)。リリースノートは
+  `app/src/main/play/release-notes/<locale>/production.txt`
+- 必要な GitHub Secrets: `ANDROID_KEYSTORE_BASE64` / `ANDROID_KEYSTORE_PASSWORD` / `ANDROID_KEY_ALIAS` /
+  `ANDROID_KEY_PASSWORD` / `PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON`(Play Console でこのアプリの権限を付けたサービスアカウント)
 
 ## 人間向け TODO
 

@@ -1,0 +1,70 @@
+name: Android Promote (internal → production)
+
+# 内部テストトラックで確認済みの AAB を、ビルドし直さずに製品版へ上げる。
+# リリースノートは app/src/main/play/release-notes/<locale>/production.txt を使う。
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "promote = 内部テストの最新を段階公開 / complete = 段階公開を 100% に / halt = 段階公開を停止"
+        type: choice
+        options: [promote, complete, halt]
+        default: promote
+      user_fraction:
+        description: "promote 時の公開割合(0 < x < 1)"
+        type: string
+        default: "0.2"
+
+concurrency:
+  group: android-promote
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # android-release.yml と同じ理由で既定の `tools` を外す
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Write Play Developer API credentials
+        env:
+          PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON }}
+        run: echo "$PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON" > play-service-account.json
+
+      - name: Promote / update production track
+        env:
+          ACTION: ${{ inputs.action }}
+          USER_FRACTION: ${{ inputs.user_fraction }}
+        run: |
+          case "$ACTION" in
+            promote)
+              # inProgress に 1.0 は渡せない(Play API が弾く)ので 0〜1 の開区間に限る
+              if ! [[ "$USER_FRACTION" =~ ^0?\.[0-9]+$ ]] || ! awk -v f="$USER_FRACTION" 'BEGIN { exit !(f > 0) }'; then
+                echo "user_fraction は 0 < x < 1 で指定する(全公開は action=complete)"; exit 1
+              fi
+              ./gradlew :app:promoteReleaseArtifact --from-track internal --promote-track production \
+                --release-status inProgress --user-fraction "$USER_FRACTION" --stacktrace ;;
+            complete|halt)
+              # GPP は手元のリリースノートを更新対象の版にも書き込む。今週の文で前の版を上書きしないよう消す
+              rm -rf app/src/main/play/release-notes
+              if [ "$ACTION" = complete ]; then status=completed; else status=halted; fi
+              ./gradlew :app:promoteReleaseArtifact --update production --release-status "$status" --stacktrace ;;
+          esac
+
+      - name: Clean up secrets
+        if: always()
+        run: rm -f play-service-account.json
