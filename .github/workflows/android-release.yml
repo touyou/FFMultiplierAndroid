@@ -10,6 +10,8 @@ on:
       - "*.gradle.kts"
       - "gradle.properties"
       - ".github/workflows/android-release.yml"
+  # 鍵の差し替え後など、コードの変更なしに上げ直したいとき用
+  workflow_dispatch:
 
 # 同時に複数リリースが走ると Play Console 側の versionCode 自動採番(resolutionStrategy AUTO)が
 # 競合しうるため、同一ブランチの新しい push を優先し古い実行はキャンセルする。
