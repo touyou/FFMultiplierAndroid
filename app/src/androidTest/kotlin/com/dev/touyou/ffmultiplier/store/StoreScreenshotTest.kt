@@ -78,7 +78,8 @@ class StoreScreenshotTest {
         store.setPlayerName("touyou")
         val day = 24L * 60 * 60 * 1000
         val now = System.currentTimeMillis()
-        listOf(1840, 1720, 1560, 1980, 1435, 1320).forEachIndexed { i, score ->
+        // エミュレータの速さで 1 回の点数が 1800 前後まで落ちることがあるので、結果がハイスコアになるよう低めにしておく
+        listOf(1240, 1120, 980, 1360, 860, 720).forEachIndexed { i, score ->
             store.add(score, now - (6 - i) * day)
         }
     }
