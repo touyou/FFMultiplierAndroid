@@ -75,7 +75,7 @@ class StoreScreenshotTest {
         store.setPlayerName("touyou")
         val day = 24L * 60 * 60 * 1000
         val now = System.currentTimeMillis()
-        listOf(1840, 2210, 1560, 2380, 1975, 1320).forEachIndexed { i, score ->
+        listOf(1840, 1720, 1560, 1980, 1435, 1320).forEachIndexed { i, score ->
             store.add(score, now - (6 - i) * day)
         }
     }

@@ -14,16 +14,19 @@ APK="${APK:-app/build/outputs/apk/debug/app-debug.apk}"
 TEST_APK="${TEST_APK:-app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk}"
 OUT="${OUT:-store-shots}"
 
-# ステータスバーを時刻 9:41・電池満タン・通知なしに固定する
+# ステータスバーを時刻 9:41・電池満タン・通知なしに固定する。起動直後は SystemUI が指示を取りこぼすことがあるので、
+# 撮るたびの直前に送り直す
 adb shell settings put global sysui_demo_allowed 1
-# SystemUI が設定を読むまで待たないと demo の指示が無視される
-sleep 3
 demo() { adb shell am broadcast -a com.android.systemui.demo -e command "$@" >/dev/null; }
-demo enter
-demo clock -e hhmm 0941
-demo battery -e level 100 -e plugged false
-demo network -e wifi show -e level 4 -e mobile show -e datatype none -e level 4
-demo notifications -e visible false
+demo_mode() {
+  demo enter
+  demo clock -e hhmm 0941
+  demo battery -e level 100 -e plugged false
+  demo network -e wifi show -e level 4 -e mobile show -e datatype none -e level 4
+  demo notifications -e visible false
+  sleep 2
+}
+sleep 5
 
 rm -rf "$OUT"
 for locale in "$@"; do
@@ -32,6 +35,7 @@ for locale in "$@"; do
   adb shell pm clear "$APP_ID" >/dev/null
   # アプリ単位の言語（API 33+）。端末の言語を変えるより速く、再起動も要らない
   adb shell cmd locale set-app-locales "$APP_ID" --locales "$locale"
+  demo_mode
   result=$(adb shell am instrument -w -e class "$TEST_CLASS" "$APP_ID.test/androidx.test.runner.AndroidJUnitRunner")
   echo "$result"
   if ! grep -q "^OK (" <<<"$result"; then
