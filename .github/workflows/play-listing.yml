@@ -1,0 +1,63 @@
+name: Play Listing
+
+# Play ストアの掲載（説明文・画像）を Gradle Play Publisher で扱う。手で起動するだけ。
+# bootstrap: 今の Play の掲載を取り込み、artifact に置く（Play は変えない）
+# publish: app/src/main/play/listings/ の内容で Play の掲載を上書きする（公開ストアが変わる）
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "bootstrap（取り込み）か publish（反映）"
+        required: true
+        type: choice
+        options: [bootstrap, publish]
+        default: bootstrap
+
+concurrency:
+  group: play-listing
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  listing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # 掲載の操作に署名鍵は要らない。GPP はこのファイルがあるときだけ有効になる
+      - name: Write Play Developer API credentials
+        env:
+          PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON }}
+        run: echo "$PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON" > play-service-account.json
+
+      # リリースノートは production push 側が持つので取り込まない
+      - name: Bootstrap listing from Play
+        if: inputs.mode == 'bootstrap'
+        run: ./gradlew :app:bootstrapListing --app-details --listings --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        if: inputs.mode == 'bootstrap'
+        with:
+          name: play-listing
+          path: app/src/main/play/
+
+      - name: Publish listing to Play
+        if: inputs.mode == 'publish'
+        run: ./gradlew :app:publishListing --stacktrace
+
+      - name: Clean up secrets
+        if: always()
+        run: rm -f play-service-account.json
