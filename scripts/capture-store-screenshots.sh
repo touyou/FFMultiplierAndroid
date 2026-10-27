@@ -22,9 +22,9 @@ demo_mode() {
   demo enter
   demo clock -e hhmm 0941
   demo battery -e level 100 -e plugged false
-  # datatype を空にしないと「3G」が出て、fully を付けないと Wi-Fi に「!」が付く
+  # モバイル回線は出すと「3G」や地の色に合わない三角が出るので隠し、Wi-Fi は fully を付けないと「!」が付く
   demo network -e wifi show -e level 4 -e fully true
-  demo network -e mobile show -e datatype null -e level 4 -e fully true
+  demo network -e mobile hide
   demo notifications -e visible false
   # 起動直後の「応答していません」などのダイアログがアプリの窓のフォーカスを奪うと、Espresso が操作できない
   adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null || true
