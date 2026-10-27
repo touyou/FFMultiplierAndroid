@@ -3,8 +3,6 @@ name: Store Screenshots
 # Play ストア用の画面をエミュレータで撮り、store-shots/raw ブランチに push する。手で起動するだけ。
 # 撮る画面は app/src/androidTest の StoreScreenshotTest、撮り方は scripts/capture-store-screenshots.sh。
 on:
-  push:
-    branches: [claude/project-thread-u599tk]  # TEMP
   workflow_dispatch:
     inputs:
       locales:
