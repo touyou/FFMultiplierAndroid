@@ -77,7 +77,9 @@ jobs:
 
       - name: Start from the current store-shots/raw
         run: |
-          if git fetch --depth 1 origin store-shots/raw; then
+          # 取得の失敗で空から始めると、撮らなかったロケールが force push で消えるので、無いときだけ新しく作る
+          if git ls-remote --exit-code origin refs/heads/store-shots/raw >/dev/null; then
+            git fetch --depth 1 origin store-shots/raw
             git checkout -B store-shots/raw FETCH_HEAD
           else
             git checkout -B store-shots/raw
