@@ -78,11 +78,16 @@ jobs:
       - name: Start from the current store-shots/raw
         run: |
           # 取得の失敗で空から始めると、撮らなかったロケールが force push で消えるので、無いときだけ新しく作る
-          if git ls-remote --exit-code origin refs/heads/store-shots/raw >/dev/null; then
+          # 終了コード 2 だけが「ブランチが無い」。それ以外の失敗は止める
+          status=0
+          git ls-remote --exit-code origin refs/heads/store-shots/raw >/dev/null || status=$?
+          if [ "$status" -eq 0 ]; then
             git fetch --depth 1 origin store-shots/raw
             git checkout -B store-shots/raw FETCH_HEAD
-          else
+          elif [ "$status" -eq 2 ]; then
             git checkout -B store-shots/raw
+          else
+            exit "$status"
           fi
 
       - uses: actions/download-artifact@v4
