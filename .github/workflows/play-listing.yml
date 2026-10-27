@@ -1,7 +1,7 @@
 name: Play Listing
 
 # Play ストアの掲載（説明文・画像）を Gradle Play Publisher で扱う。手で起動するだけ。
-# bootstrap: 今の Play の掲載を取り込み、artifact に置く（Play は変えない）
+# bootstrap: 今の Play の掲載を取り込み、play-listing/bootstrap ブランチに push する（Play は変えない）
 # publish: app/src/main/play/listings/ の内容で Play の掲載を上書きする（公開ストアが変わる）
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   listing:
@@ -48,11 +48,16 @@ jobs:
         if: inputs.mode == 'bootstrap'
         run: ./gradlew :app:bootstrapListing --app-details --listings --stacktrace
 
-      - uses: actions/upload-artifact@v4
+      # artifact はクラウドの作業環境から落とせないので、差分として読めるブランチに置く
+      - name: Push bootstrapped listing
         if: inputs.mode == 'bootstrap'
-        with:
-          name: play-listing
-          path: app/src/main/play/
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B play-listing/bootstrap
+          git add -f app/src/main/play/
+          git diff --cached --quiet || git commit -m "Play の今の掲載を取り込む"
+          git push -f origin play-listing/bootstrap
 
       - name: Publish listing to Play
         if: inputs.mode == 'publish'
