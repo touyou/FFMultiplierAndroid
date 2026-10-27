@@ -16,6 +16,8 @@ OUT="${OUT:-store-shots}"
 
 # ステータスバーを時刻 9:41・電池満タン・通知なしに固定する
 adb shell settings put global sysui_demo_allowed 1
+# SystemUI が設定を読むまで待たないと demo の指示が無視される
+sleep 3
 demo() { adb shell am broadcast -a com.android.systemui.demo -e command "$@" >/dev/null; }
 demo enter
 demo clock -e hhmm 0941

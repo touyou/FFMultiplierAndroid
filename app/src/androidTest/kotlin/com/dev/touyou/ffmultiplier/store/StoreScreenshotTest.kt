@@ -48,6 +48,8 @@ class StoreScreenshotTest {
             // 数問解いてスコアとコンボを積み、次の答えを 1 桁だけ打った所で撮る
             val start = System.currentTimeMillis()
             while (System.currentTimeMillis() - start < 12_000) solveOne()
+            // 正解の表示が数字キーに重なるので、消えてから打つ
+            compose.waitUntil(5_000) { !isShown("accepted") }
             tap(answer().first().toString())
             settle()
             capture("02-game")
@@ -73,7 +75,7 @@ class StoreScreenshotTest {
         store.setPlayerName("touyou")
         val day = 24L * 60 * 60 * 1000
         val now = System.currentTimeMillis()
-        listOf(185, 240, 150, 310, 275, 120).forEachIndexed { i, score ->
+        listOf(1840, 2210, 1560, 2380, 1975, 1320).forEachIndexed { i, score ->
             store.add(score, now - (6 - i) * day)
         }
     }
