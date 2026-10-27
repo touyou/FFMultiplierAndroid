@@ -24,6 +24,8 @@ demo_mode() {
   demo battery -e level 100 -e plugged false
   demo network -e wifi show -e level 4 -e mobile show -e datatype none -e level 4
   demo notifications -e visible false
+  # 起動直後の「応答していません」などのダイアログがアプリの窓のフォーカスを奪うと、Espresso が操作できない
+  adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null || true
   sleep 2
 }
 sleep 5

@@ -1,6 +1,7 @@
 package com.dev.touyou.ffmultiplier.store
 
 import android.graphics.Bitmap
+import android.os.ParcelFileDescriptor
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.hasClickAction
@@ -108,7 +109,24 @@ class StoreScreenshotTest {
         Thread.sleep(1500)
     }
 
+    // adb から送ったステータスバーの固定（9:41・電池満タン）を SystemUI が取りこぼすことがあるので、撮る直前にも送る
+    private fun pinStatusBar() {
+        val demo = "am broadcast -a com.android.systemui.demo -e command"
+        listOf(
+            "settings put global sysui_demo_allowed 1",
+            "$demo enter",
+            "$demo clock -e hhmm 0941",
+            "$demo battery -e level 100 -e plugged false",
+            "$demo network -e wifi show -e level 4 -e mobile show -e datatype none -e level 4",
+            "$demo notifications -e visible false",
+        ).forEach { command ->
+            ParcelFileDescriptor.AutoCloseInputStream(instrumentation.uiAutomation.executeShellCommand(command)).use { it.readBytes() }
+        }
+        Thread.sleep(500)
+    }
+
     private fun capture(name: String) {
+        pinStatusBar()
         val bitmap = instrumentation.uiAutomation.takeScreenshot() ?: error("スクリーンショットが撮れなかった: $name")
         val dir = File(instrumentation.targetContext.filesDir, "store-shots").apply { mkdirs() }
         File(dir, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
