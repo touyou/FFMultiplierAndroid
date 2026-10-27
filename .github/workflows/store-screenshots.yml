@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   capture:
@@ -23,6 +23,8 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-java@v4
         with:
@@ -57,12 +59,46 @@ jobs:
           disable-animations: true
           script: ./scripts/capture-store-screenshots.sh ${{ inputs.locales || 'ja-JP' }}
 
-      # artifact はクラウドの作業環境から落とせないので、ブランチに置く
+      - uses: actions/upload-artifact@v4
+        with:
+          name: store-shots
+          path: store-shots
+          if-no-files-found: error
+
+  # 書き込み権限は、撮影で外部のアクションや Gradle を動かすジョブから切り離してここだけに持たせる。
+  # artifact はクラウドの作業環境から落とせないので、ブランチに置く
+  push:
+    needs: capture
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Start from the current store-shots/raw
+        run: |
+          if git fetch --depth 1 origin store-shots/raw; then
+            git checkout -B store-shots/raw FETCH_HEAD
+          else
+            git checkout -B store-shots/raw
+          fi
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: store-shots
+          path: ${{ runner.temp }}/store-shots
+
+      # 撮った言語だけ差し替え、今回撮らなかった言語の画面は残す
       - name: Push screenshots
         run: |
+          mkdir -p store-shots
+          for dir in "$RUNNER_TEMP"/store-shots/*/; do
+            locale=$(basename "$dir")
+            rm -rf "store-shots/$locale"
+            cp -R "$dir" "store-shots/$locale"
+          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B store-shots/raw
           git add -f store-shots
           git diff --cached --quiet || git commit -m "Play ストア用の画面を撮る"
           git push -f origin store-shots/raw

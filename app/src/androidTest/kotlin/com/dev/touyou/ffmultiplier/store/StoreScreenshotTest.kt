@@ -61,6 +61,8 @@ class StoreScreenshotTest {
                 compose.waitForIdle()
             }
             settle()
+            // 種のスコアを越えないと結果に「High Score」が出ず、絵の意図と違う 1 枚になる
+            check(isShown("High Score")) { "ハイスコアにならなかった" }
             capture("03-result")
 
             button("EXIT").performClick()
