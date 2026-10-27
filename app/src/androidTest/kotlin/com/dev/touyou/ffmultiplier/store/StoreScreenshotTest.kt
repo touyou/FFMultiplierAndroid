@@ -122,7 +122,8 @@ class StoreScreenshotTest {
         ).forEach { command ->
             ParcelFileDescriptor.AutoCloseInputStream(instrumentation.uiAutomation.executeShellCommand(command)).use { it.readBytes() }
         }
-        Thread.sleep(500)
+        // アイコンの描き替えが追いつくまで待つ
+        Thread.sleep(1500)
     }
 
     private fun capture(name: String) {
