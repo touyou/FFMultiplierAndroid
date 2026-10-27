@@ -56,7 +56,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B play-listing/bootstrap
           git add -f app/src/main/play/
-          git commit -m "Play の今の掲載を取り込む" || echo "差分なし"
+          git diff --cached --quiet || git commit -m "Play の今の掲載を取り込む"
           git push -f origin play-listing/bootstrap
 
       - name: Publish listing to Play
