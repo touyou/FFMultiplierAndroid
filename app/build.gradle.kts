@@ -107,6 +107,8 @@ dependencies {
     implementation(libs.play.services.ads)
     // 旧版がランキングの key にしていた広告 ID を読む(旧レコードの後始末用)
     implementation(libs.play.services.ads.identifier)
+    // Play Services が引き込む古い fragment を Play Console が「古いバージョン」と警告するので、新しい版に揃える。
+    implementation(libs.androidx.fragment)
     debugImplementation(libs.androidx.ui.tooling)
 
     testImplementation(libs.junit)
