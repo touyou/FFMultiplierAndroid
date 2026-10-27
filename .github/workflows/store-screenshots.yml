@@ -1,0 +1,70 @@
+name: Store Screenshots
+
+# Play ストア用の画面をエミュレータで撮り、store-shots/raw ブランチに push する。手で起動するだけ。
+# 撮る画面は app/src/androidTest の StoreScreenshotTest、撮り方は scripts/capture-store-screenshots.sh。
+on:
+  push:
+    branches: [claude/project-thread-u599tk]  # TEMP
+  workflow_dispatch:
+    inputs:
+      locales:
+        description: "撮る言語（空白区切り）"
+        required: true
+        default: "ja-JP"
+
+concurrency:
+  group: store-screenshots
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build app and test APKs
+        run: ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest --stacktrace
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Capture on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          APP_ID: com.dev.touyou.ffmultiplier
+          TEST_CLASS: com.dev.touyou.ffmultiplier.store.StoreScreenshotTest
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: ./scripts/capture-store-screenshots.sh ${{ inputs.locales || 'ja-JP' }}
+
+      # artifact はクラウドの作業環境から落とせないので、ブランチに置く
+      - name: Push screenshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B store-shots/raw
+          git add -f store-shots
+          git diff --cached --quiet || git commit -m "Play ストア用の画面を撮る"
+          git push -f origin store-shots/raw

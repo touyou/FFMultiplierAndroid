@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.dev.touyou.ffmultiplier.R
+import com.dev.touyou.ffmultiplier.ScreenshotFixture
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
@@ -39,6 +40,7 @@ object AdManager {
 
     /** ロード済みなら表示し、次回用に読み直す。 */
     fun showInterstitial(activity: Activity) {
+        if (ScreenshotFixture.active) return
         val ad = interstitial ?: return
         interstitial = null
         ad.show(activity)

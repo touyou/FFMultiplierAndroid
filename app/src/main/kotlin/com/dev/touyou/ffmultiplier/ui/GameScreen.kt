@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -113,9 +114,9 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, modifier: Modi
         }
         Spacer(Modifier.weight(1f))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Operand(vm.leftText)
+            Operand(vm.leftText, Modifier.testTag("operandLeft"))
             Text("×", fontSize = 41.sp, color = FFColor.white)
-            Operand(vm.rightText)
+            Operand(vm.rightText, Modifier.testTag("operandRight"))
         }
         Text(
             vm.inputText,
@@ -146,9 +147,9 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, modifier: Modi
 }
 
 @Composable
-private fun Operand(text: String) {
+private fun Operand(text: String, modifier: Modifier = Modifier) {
     Box(
-        Modifier
+        modifier
             .sizeIn(minWidth = 80.dp, minHeight = 88.dp)
             .background(FFColor.whiteBackground, RoundedCornerShape(8.dp))
             .padding(8.dp),

@@ -33,6 +33,7 @@ android {
         targetSdk = 37
         versionCode = project.property("FF_VERSION_CODE").toString().toInt()
         versionName = project.property("FF_VERSION_NAME").toString()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     if (hasReleaseSigning) {
@@ -113,4 +114,11 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // ストア用の撮影(StoreScreenshotTest)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
