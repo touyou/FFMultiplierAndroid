@@ -1,0 +1,13 @@
+Simple Calculation Game, FFMultiplier
+Play and Study Hex Multiplication!
+Compete score with people all over the world!
+
+[How to Play]
+Your task is to answer Hex Multiplications in 60 seconds.
+Please enjoy this game!
+
+Function---------
+- Hex Multiplication Game
+- Online Ranking
+- Check your scores
+- Share your score and rank

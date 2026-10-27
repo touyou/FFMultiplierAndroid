@@ -1,1 +1,0 @@
-Rebuilt from the ground up. Shares the online ranking with the iOS version and supports dark mode and landscape.
