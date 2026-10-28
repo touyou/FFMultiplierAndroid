@@ -49,3 +49,6 @@ keystore.properties
 
 # Play Developer API のサービスアカウント鍵(CI が書き出す)
 play-service-account.json
+
+# Play ストア用の撮影の出力(scripts/capture-store-screenshots.sh)
+store-shots/

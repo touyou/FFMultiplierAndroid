@@ -1,0 +1,111 @@
+name: Store Screenshots
+
+# Play ストア用の画面をエミュレータで撮り、store-shots/raw ブランチに push する。手で起動するだけ。
+# 撮る画面は app/src/androidTest の StoreScreenshotTest、撮り方は scripts/capture-store-screenshots.sh。
+on:
+  workflow_dispatch:
+    inputs:
+      locales:
+        description: "撮る言語（空白区切り）"
+        required: true
+        default: "ja-JP"
+
+concurrency:
+  group: store-screenshots
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build app and test APKs
+        run: ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest --stacktrace
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Capture on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          APP_ID: com.dev.touyou.ffmultiplier
+          TEST_CLASS: com.dev.touyou.ffmultiplier.store.StoreScreenshotTest
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: ./scripts/capture-store-screenshots.sh ${{ inputs.locales || 'ja-JP' }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: store-shots
+          path: store-shots
+          if-no-files-found: error
+
+  # 書き込み権限は、撮影で外部のアクションや Gradle を動かすジョブから切り離してここだけに持たせる。
+  # artifact はクラウドの作業環境から落とせないので、ブランチに置く
+  push:
+    needs: capture
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Start from the current store-shots/raw
+        run: |
+          # 取得の失敗で空から始めると、撮らなかったロケールが force push で消えるので、無いときだけ新しく作る
+          # 終了コード 2 だけが「ブランチが無い」。それ以外の失敗は止める
+          status=0
+          git ls-remote --exit-code origin refs/heads/store-shots/raw >/dev/null || status=$?
+          if [ "$status" -eq 0 ]; then
+            git fetch --depth 1 origin store-shots/raw
+            git checkout -B store-shots/raw FETCH_HEAD
+          elif [ "$status" -eq 2 ]; then
+            git checkout -B store-shots/raw
+          else
+            exit "$status"
+          fi
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: store-shots
+          path: ${{ runner.temp }}/store-shots
+
+      # 撮った言語だけ差し替え、今回撮らなかった言語の画面は残す
+      - name: Push screenshots
+        run: |
+          mkdir -p store-shots
+          for dir in "$RUNNER_TEMP"/store-shots/*/; do
+            locale=$(basename "$dir")
+            rm -rf "store-shots/$locale"
+            cp -R "$dir" "store-shots/$locale"
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f store-shots
+          git diff --cached --quiet || git commit -m "Play ストア用の画面を撮る"
+          git push -f origin store-shots/raw

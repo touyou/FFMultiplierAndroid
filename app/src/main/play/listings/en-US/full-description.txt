@@ -1,0 +1,18 @@
+Times tables, all the way to F.
+
+FFMultiplier is a game about how many hexadecimal multiplications you can answer in 60 seconds. Ready to learn your times tables in hex?
+
+[From 0 to F]
+Every question multiplies two single hex digits, 0 through F. The biggest answer is F × F = E1. Type your answer on the 0–F keypad.
+
+[How many in 60 seconds?]
+- A correct answer scores 10 points
+- A wrong answer takes 5 points away and resets your streak
+- Every 5 correct answers in a row adds 5 points per question, up to 25 points each
+
+[High scores go to the ranking]
+- Local Score: your top 50 past scores, best first
+- Online Ranking: switch between the top 50 players worldwide and the players right around you
+- Send your score or rank with SHARE
+
+Free to play, with ads. Also available on iPhone.
