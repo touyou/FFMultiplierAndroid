@@ -51,13 +51,15 @@ jobs:
         env:
           APP_ID: com.dev.touyou.ffmultiplier
           TEST_CLASS: com.dev.touyou.ffmultiplier.store.StoreScreenshotTest
+          LOCALES: ${{ inputs.locales || 'ja-JP' }}
         with:
           api-level: 35
           target: google_apis
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: ./scripts/capture-store-screenshots.sh ${{ inputs.locales || 'ja-JP' }}
+          # 入力を script に直接埋めるとシェルの構文として読まれるので、環境変数で渡す
+          script: ./scripts/capture-store-screenshots.sh $LOCALES
 
       - uses: actions/upload-artifact@v4
         with:
