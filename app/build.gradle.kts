@@ -33,6 +33,7 @@ android {
         targetSdk = 37
         versionCode = project.property("FF_VERSION_CODE").toString().toInt()
         versionName = project.property("FF_VERSION_NAME").toString()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     if (hasReleaseSigning) {
@@ -101,11 +102,23 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.appcheck.playintegrity)
+    // debug ビルドはエミュレータでも通るようデバッグ用プロバイダを使う(src/debug の AppCheckSetup)
+    debugImplementation(libs.firebase.appcheck.debug)
     implementation(libs.play.services.ads)
     // 旧版がランキングの key にしていた広告 ID を読む(旧レコードの後始末用)
     implementation(libs.play.services.ads.identifier)
+    // Play Services が引き込む古い fragment を Play Console が「古いバージョン」と警告するので、新しい版に揃える。
+    implementation(libs.androidx.fragment)
     debugImplementation(libs.androidx.ui.tooling)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // ストア用の撮影(StoreScreenshotTest)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

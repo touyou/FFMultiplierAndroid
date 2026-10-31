@@ -2,6 +2,7 @@ package com.dev.touyou.ffmultiplier.data
 
 import android.content.Context
 import android.util.Log
+import com.dev.touyou.ffmultiplier.ScreenshotFixture
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +25,7 @@ class RankingService(private val context: Context, private val store: ScoreStore
 
     /** 自分のスコアを登録する。書き込めたら true。 */
     suspend fun register(name: String, score: Int): Boolean {
+        if (ScreenshotFixture.active) return false
         val normalized = normalizedName(name)
         if (normalized.isEmpty()) return false
         val uid = signedInUserId() ?: return false
