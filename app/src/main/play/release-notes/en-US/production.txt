@@ -1,1 +1,3 @@
-Rebuilt from the ground up. Shares the online ranking with the iOS version and supports dark mode and landscape.
+Thanks for playing! This update makes the online ranking a fairer place for everyone.
+- Scores can now only be submitted from the genuine app (Firebase App Check)
+- Updated internal libraries for better stability
