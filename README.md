@@ -33,11 +33,3 @@
   `app/src/main/play/release-notes/<locale>/production.txt`
 - 必要な GitHub Secrets: `ANDROID_KEYSTORE_BASE64` / `ANDROID_KEYSTORE_PASSWORD` / `ANDROID_KEY_ALIAS` /
   `ANDROID_KEY_PASSWORD` / `PLAY_PUBLISHER_SERVICE_ACCOUNT_JSON`(Play Console でこのアプリの権限を付けたサービスアカウント)
-
-## 人間向け TODO
-
-- [ ] **アップロード鍵の所在を確認する**。Play に 1.3.0(versionCode 6)を出したときの鍵が見つかっていない
-  (旧チェックアウトにも `*.jks` / `*.keystore` は無い)。
-  - Play アプリ署名が有効なら、Play Console の「アプリの完全性」からアップロード鍵のリセットを申請し、
-    新しい鍵で `keystore.properties` を作る
-  - Play アプリ署名が無効で元の鍵も無い場合は、同じパッケージ名で更新を出せない。別パッケージで出し直すかを判断する
