@@ -76,7 +76,5 @@ class ScoreStore(private val context: Context) {
         private val PLAYER_NAME = stringPreferencesKey("playername")
         private val TUTORIAL_SHOWN = booleanPreferencesKey("tutorial")
         val RANKING_MIGRATED = booleanPreferencesKey("rankingMigratedToV2")
-        /** `scores` と `scores_legacy` の両方から旧レコードを消し終えたか。`scores` だけを消していた版のフラグとは分ける。 */
-        val LEGACY_REMOVED = booleanPreferencesKey("rankingLegacyAndHashedRemoved")
     }
 }

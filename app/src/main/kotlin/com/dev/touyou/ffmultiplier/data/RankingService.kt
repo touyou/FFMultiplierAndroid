@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
@@ -35,7 +36,8 @@ class RankingService(private val context: Context, private val store: ScoreStore
         val value = mapOf("name" to normalized, "score" to score)
         return try {
             ref.child(PATH).child(uid).setValue(value, -score.toDouble()).await()
-            if (!store.flag(ScoreStore.LEGACY_REMOVED)) removeLegacyRecords()
+            // 移行スクリプトを流し直すと消した行が戻るので、フラグで止めず登録のたびに消す
+            removeLegacyRecords()
             true
         } catch (e: Exception) {
             Log.w(TAG, "register failed", e)
@@ -44,10 +46,11 @@ class RankingService(private val context: Context, private val store: ScoreStore
     }
 
     /** ランキングから自分の記録を消す(新旧すべての場所)。すべて消せたら true。 */
-    suspend fun deleteMyRecords(): Boolean {
-        if (ScreenshotFixture.active) return false
-        val uid = signedInUserId() ?: return false
-        return try {
+    suspend fun deleteMyRecords(): Boolean = withContext(NonCancellable) {
+        // 画面を閉じても途中で止まらないようにする(一部だけ消えた状態を残さない)
+        if (ScreenshotFixture.active) return@withContext false
+        val uid = signedInUserId() ?: return@withContext false
+        try {
             ref.child(PATH).child(uid).removeValue().await()
             removeLegacyRecords()
         } catch (e: Exception) {
@@ -65,10 +68,10 @@ class RankingService(private val context: Context, private val store: ScoreStore
     }
 
     suspend fun fetchRanking(): RankedResult = coroutineScope {
-        val legacy = async { rows(HASHED_LEGACY_PATH) }
         val legacyId = async { legacyDeviceId() }
-        // scores_v2 の read は auth != null。初回はサインインを待たないと Permission denied で空になる
+        // scores_v2 と scores_legacy の read は auth != null。初回はサインインを待たないと Permission denied で空になる
         val myUid = signedInUserId()
+        val legacy = async { rows(HASHED_LEGACY_PATH) }
         val currentRows = rows(PATH)
         val hasCurrentRecord = myUid != null && currentRows.any { it.key == myUid }
         val legacyKey = legacyId.await()?.let(::hashedLegacyKey)
@@ -107,7 +110,6 @@ class RankingService(private val context: Context, private val store: ScoreStore
         return try {
             ref.child(LEGACY_PATH).child(legacyKey).removeValue().await()
             ref.child(HASHED_LEGACY_PATH).child(hashedLegacyKey(legacyKey)).removeValue().await()
-            store.setFlag(ScoreStore.LEGACY_REMOVED)
             true
         } catch (e: Exception) {
             Log.w(TAG, "legacy cleanup failed", e)

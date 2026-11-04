@@ -49,7 +49,9 @@ import com.dev.touyou.ffmultiplier.data.LocalScore
 import com.dev.touyou.ffmultiplier.data.RankedResult
 import com.dev.touyou.ffmultiplier.data.normalizedName
 import com.dev.touyou.ffmultiplier.data.windowAround
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 
@@ -307,13 +309,12 @@ fun SettingsScreen(onClose: () -> Unit) {
                 TextButton(onClick = {
                     confirmRankingDelete = false
                     scope.launch {
-                        // 名前が残っていると次のハイスコアで自動登録し直されるので、名前も消す
-                        if (app.rankingService.deleteMyRecords()) {
-                            app.scoreStore.clearPlayerName()
-                            name = ""
-                        } else {
-                            rankingDeleteFailed = true
+                        // 名前が残っていると次のハイスコアで自動登録し直されるので、名前も消す。
+                        // 画面を閉じても名前の消去まで終わらせる
+                        val deleted = withContext(NonCancellable) {
+                            app.rankingService.deleteMyRecords().also { if (it) app.scoreStore.clearPlayerName() }
                         }
+                        if (deleted) name = "" else rankingDeleteFailed = true
                     }
                 }) { Text("Delete", color = FFColor.red) }
             },
