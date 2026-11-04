@@ -1,3 +1,4 @@
-Thanks for playing! This update makes the online ranking a fairer place for everyone.
-- Scores can now only be submitted from the genuine app (Firebase App Check)
-- Updated internal libraries for better stability
+Thanks for playing! This update is all about feeling at ease when you join the ranking.
+- Added "Delete from ranking" in Settings, so you can remove your name and scores anytime
+- Deleting all local scores now removes your ranking records too
+- Records from older versions no longer share anything that could identify your device with other players
