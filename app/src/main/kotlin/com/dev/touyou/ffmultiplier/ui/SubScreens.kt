@@ -113,6 +113,10 @@ fun LocalScoreScreen(onClose: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scores by app.scoreStore.scores.collectAsState(initial = emptyList())
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
+    var rankingDeleteFailed by rememberSaveable { mutableStateOf(false) }
+    fun deleteFromRanking() {
+        scope.launch { rankingDeleteFailed = !app.rankingService.deleteMyRecords() }
+    }
     val dateFormat = remember { DateFormat.getDateInstance(DateFormat.MEDIUM) }
 
     FFScaffold(
@@ -138,11 +142,26 @@ fun LocalScoreScreen(onClose: () -> Unit) {
                     confirmDelete = false
                     scope.launch {
                         app.scoreStore.deleteAll()
-                        app.rankingService.deleteMyRecords()
+                        deleteFromRanking()
                     }
                 }) { Text("OK", color = FFColor.red) }
             },
             dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancel") } },
+        )
+    }
+
+    if (rankingDeleteFailed) {
+        AlertDialog(
+            onDismissRequest = { rankingDeleteFailed = false },
+            title = { Text("Couldn't delete from ranking") },
+            text = { Text("Check your connection and try again.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    rankingDeleteFailed = false
+                    deleteFromRanking()
+                }) { Text("Retry") }
+            },
+            dismissButton = { TextButton(onClick = { rankingDeleteFailed = false }) { Text("Cancel") } },
         )
     }
 }
