@@ -43,3 +43,14 @@ class RankingTest {
         assertEquals("😀".repeat(20), normalizedName(emoji))
     }
 }
+
+class HashedLegacyKeyTest {
+    // FFMultiply リポジトリの scripts/migrate-legacy-scores.mjs と同じ値になること
+    @Test
+    fun matchesMigrationScript() {
+        assertEquals(
+            "94f563a28062f0440052cc70d65caa4cde60ec89c3b01ab14bb4a1edc426e81e",
+            RankingService.hashedLegacyKey("ABC-DEF"),
+        )
+    }
+}
