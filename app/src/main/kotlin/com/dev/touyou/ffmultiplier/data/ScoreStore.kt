@@ -48,6 +48,10 @@ class ScoreStore(private val context: Context) {
         store.edit { it[PLAYER_NAME] = name }
     }
 
+    suspend fun clearPlayerName() {
+        store.edit { it.remove(PLAYER_NAME) }
+    }
+
     /** 初回だけ true を返し、以後は false。 */
     suspend fun consumeFirstLaunch(): Boolean {
         var first = false
@@ -72,6 +76,5 @@ class ScoreStore(private val context: Context) {
         private val PLAYER_NAME = stringPreferencesKey("playername")
         private val TUTORIAL_SHOWN = booleanPreferencesKey("tutorial")
         val RANKING_MIGRATED = booleanPreferencesKey("rankingMigratedToV2")
-        val LEGACY_REMOVED = booleanPreferencesKey("rankingLegacyRemoved")
     }
 }

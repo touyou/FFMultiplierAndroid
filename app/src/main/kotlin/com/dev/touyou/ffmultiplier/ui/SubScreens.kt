@@ -49,7 +49,9 @@ import com.dev.touyou.ffmultiplier.data.LocalScore
 import com.dev.touyou.ffmultiplier.data.RankedResult
 import com.dev.touyou.ffmultiplier.data.normalizedName
 import com.dev.touyou.ffmultiplier.data.windowAround
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 
@@ -111,6 +113,10 @@ fun LocalScoreScreen(onClose: () -> Unit) {
     val scope = rememberCoroutineScope()
     val scores by app.scoreStore.scores.collectAsState(initial = emptyList())
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
+    var rankingDeleteFailed by rememberSaveable { mutableStateOf(false) }
+    fun deleteFromRanking() {
+        scope.launch { rankingDeleteFailed = !app.rankingService.deleteMyRecords() }
+    }
     val dateFormat = remember { DateFormat.getDateInstance(DateFormat.MEDIUM) }
 
     FFScaffold(
@@ -130,17 +136,32 @@ fun LocalScoreScreen(onClose: () -> Unit) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
             title = { Text("delete data") },
-            text = { Text("Do you really want to delete all your data?") },
+            text = { Text("Do you really want to delete all your data? Your scores will also be removed from the online ranking.") },
             confirmButton = {
                 TextButton(onClick = {
                     confirmDelete = false
                     scope.launch {
-                        app.scoreStore.playerName()?.let { app.rankingService.reset(it) }
                         app.scoreStore.deleteAll()
+                        deleteFromRanking()
                     }
                 }) { Text("OK", color = FFColor.red) }
             },
             dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancel") } },
+        )
+    }
+
+    if (rankingDeleteFailed) {
+        AlertDialog(
+            onDismissRequest = { rankingDeleteFailed = false },
+            title = { Text("Couldn't delete from ranking") },
+            text = { Text("Check your connection and try again.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    rankingDeleteFailed = false
+                    deleteFromRanking()
+                }) { Text("Retry") }
+            },
+            dismissButton = { TextButton(onClick = { rankingDeleteFailed = false }) { Text("Cancel") } },
         )
     }
 }
@@ -234,6 +255,8 @@ fun SettingsScreen(onClose: () -> Unit) {
     val scope = rememberCoroutineScope()
     var name by rememberSaveable { mutableStateOf("") }
     var showTutorial by rememberSaveable { mutableStateOf(false) }
+    var confirmRankingDelete by rememberSaveable { mutableStateOf(false) }
+    var rankingDeleteFailed by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) { name = app.scoreStore.playerName().orEmpty() }
 
     FFScaffold(
@@ -278,9 +301,52 @@ fun SettingsScreen(onClose: () -> Unit) {
                 prominent = false,
                 modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
             )
+            FFButton(
+                "DELETE FROM RANKING",
+                onClick = { confirmRankingDelete = true },
+                tint = FFColor.red,
+                prominent = false,
+                modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
+            )
         }
         BannerAd()
     }
 
     if (showTutorial) TutorialDialog(onExit = { showTutorial = false })
+
+    if (confirmRankingDelete) {
+        AlertDialog(
+            onDismissRequest = { confirmRankingDelete = false },
+            title = { Text("Delete from ranking") },
+            text = {
+                Text(
+                    "Your name and scores will be removed from the online ranking, and your user name will be cleared. " +
+                        "Nothing is sent to the ranking until you set a user name again.",
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmRankingDelete = false
+                    scope.launch {
+                        // 名前が残っていると次のハイスコアで自動登録し直されるので、名前も消す。
+                        // 画面を閉じても名前の消去まで終わらせる
+                        val deleted = withContext(NonCancellable) {
+                            app.rankingService.deleteMyRecords().also { if (it) app.scoreStore.clearPlayerName() }
+                        }
+                        if (deleted) name = "" else rankingDeleteFailed = true
+                    }
+                }) { Text("Delete", color = FFColor.red) }
+            },
+            dismissButton = { TextButton(onClick = { confirmRankingDelete = false }) { Text("Cancel") } },
+        )
+    }
+
+    if (rankingDeleteFailed) {
+        AlertDialog(
+            onDismissRequest = { rankingDeleteFailed = false },
+            title = { Text("Couldn't delete from ranking") },
+            text = { Text("Check your connection and try again.") },
+            confirmButton = { TextButton(onClick = { rankingDeleteFailed = false }) { Text("OK") } },
+        )
+    }
 }
