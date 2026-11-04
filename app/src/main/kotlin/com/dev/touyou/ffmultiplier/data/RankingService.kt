@@ -8,16 +8,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.security.MessageDigest
 
 /**
  * Firebase Realtime Database のオンラインランキング(iOS 版と同じデータを共有する)。
  *
- * 自分のレコードは匿名認証の uid を key に `scores_v2/<uid>` へ置く。旧版は `scores/<広告 ID>` に
- * 認証なしで書いていたため、移行期間中は両方を読んで順位を出し、`scores_v2` に書けたら旧レコードを消す。
+ * 自分のレコードは匿名認証の uid を key に `scores_v2/<uid>` へ置く。旧版は `scores/<広告 ID>` に書いていた。
+ * 端末の ID をほかの利用者に配らないよう、旧レコードはサーバー側で key をハッシュにした `scores_legacy` へ
+ * 写してあり、こちらだけを読む。`scores_v2` に書けたら、旧レコードを両方の場所から消す。
  */
 class RankingService(private val context: Context, private val store: ScoreStore) {
     private val ref = FirebaseDatabase.getInstance().reference
@@ -33,7 +36,8 @@ class RankingService(private val context: Context, private val store: ScoreStore
         val value = mapOf("name" to normalized, "score" to score)
         return try {
             ref.child(PATH).child(uid).setValue(value, -score.toDouble()).await()
-            removeLegacyRecordIfNeeded()
+            // 移行スクリプトを流し直すと消した行が戻るので、フラグで止めず登録のたびに消す
+            removeLegacyRecords()
             true
         } catch (e: Exception) {
             Log.w(TAG, "register failed", e)
@@ -41,9 +45,18 @@ class RankingService(private val context: Context, private val store: ScoreStore
         }
     }
 
-    /** 自分のスコアを 0 にする(ローカル全削除時)。 */
-    suspend fun reset(name: String) {
-        register(name, 0)
+    /** ランキングから自分の記録を消す(新旧すべての場所)。すべて消せたら true。 */
+    suspend fun deleteMyRecords(): Boolean = withContext(NonCancellable) {
+        // 画面を閉じても途中で止まらないようにする(一部だけ消えた状態を残さない)
+        if (ScreenshotFixture.active) return@withContext false
+        val uid = signedInUserId() ?: return@withContext false
+        try {
+            ref.child(PATH).child(uid).removeValue().await()
+            removeLegacyRecords()
+        } catch (e: Exception) {
+            Log.w(TAG, "delete failed", e)
+            false
+        }
     }
 
     /** 以前の版で登録していた端末のために、端末内の最高スコアを一度だけ `scores_v2` に登録し直す。 */
@@ -55,13 +68,13 @@ class RankingService(private val context: Context, private val store: ScoreStore
     }
 
     suspend fun fetchRanking(): RankedResult = coroutineScope {
-        val legacy = async { rows(LEGACY_PATH) }
         val legacyId = async { legacyDeviceId() }
-        // scores_v2 の read は auth != null。初回はサインインを待たないと Permission denied で空になる
+        // scores_v2 と scores_legacy の read は auth != null。初回はサインインを待たないと Permission denied で空になる
         val myUid = signedInUserId()
+        val legacy = async { rows(HASHED_LEGACY_PATH) }
         val currentRows = rows(PATH)
         val hasCurrentRecord = myUid != null && currentRows.any { it.key == myUid }
-        val legacyKey = legacyId.await()
+        val legacyKey = legacyId.await()?.let(::hashedLegacyKey)
         // 登録し直した端末の旧レコードがまだ残っていても二重に並べない
         val legacyRows = legacy.await().filterNot { hasCurrentRecord && it.key == legacyKey }
         rank(currentRows + legacyRows, if (hasCurrentRecord) myUid else legacyKey)
@@ -91,14 +104,16 @@ class RankingService(private val context: Context, private val store: ScoreStore
         ScoreRow(key, score, name)
     }
 
-    private suspend fun removeLegacyRecordIfNeeded() {
-        if (store.flag(ScoreStore.LEGACY_REMOVED)) return
-        val legacyKey = legacyDeviceId() ?: return
-        try {
+    /** 自分の旧レコードを `scores` と `scores_legacy` から消す。無いものを消しても成功になる。 */
+    private suspend fun removeLegacyRecords(): Boolean {
+        val legacyKey = legacyDeviceId() ?: return true
+        return try {
             ref.child(LEGACY_PATH).child(legacyKey).removeValue().await()
-            store.setFlag(ScoreStore.LEGACY_REMOVED)
+            ref.child(HASHED_LEGACY_PATH).child(hashedLegacyKey(legacyKey)).removeValue().await()
+            true
         } catch (e: Exception) {
             Log.w(TAG, "legacy cleanup failed", e)
+            false
         }
     }
 
@@ -111,9 +126,20 @@ class RankingService(private val context: Context, private val store: ScoreStore
             ?.takeUnless { it.all { c -> c == '0' || c == '-' } }
     }
 
-    private companion object {
-        const val TAG = "RankingService"
-        const val PATH = "scores_v2"
-        const val LEGACY_PATH = "scores"
+    companion object {
+        private const val TAG = "RankingService"
+        private const val PATH = "scores_v2"
+        /** 旧版が書いていた場所。key が広告 ID なので読まない。自分の旧レコードを消すときだけ触る。 */
+        private const val LEGACY_PATH = "scores"
+        /** 旧レコードを key をハッシュにして写した場所(FFMultiply リポジトリの scripts/migrate-legacy-scores.mjs)。 */
+        private const val HASHED_LEGACY_PATH = "scores_legacy"
+        /** ハッシュの前に付ける文字列。移行スクリプトと iOS 版と同じ値にする。 */
+        private const val LEGACY_KEY_SALT = "ffmultiplier-ranking-legacy:"
+
+        /** `scores_legacy` での key。旧 key に salt を付けた SHA-256 の 16 進。 */
+        fun hashedLegacyKey(deviceId: String): String =
+            MessageDigest.getInstance("SHA-256")
+                .digest((LEGACY_KEY_SALT + deviceId).toByteArray(Charsets.UTF_8))
+                .joinToString("") { "%02x".format(it) }
     }
 }
