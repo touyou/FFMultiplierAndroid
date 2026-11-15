@@ -1,5 +1,6 @@
 package com.dev.touyou.ffmultiplier.ui
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dev.touyou.ffmultiplier.FFApplication
+import com.dev.touyou.ffmultiplier.ads.AdManager
 import com.dev.touyou.ffmultiplier.ads.BannerAd
+import com.dev.touyou.ffmultiplier.ads.ConsentManager
 import com.dev.touyou.ffmultiplier.data.LocalScore
 import com.dev.touyou.ffmultiplier.data.RankedResult
 import com.dev.touyou.ffmultiplier.data.normalizedName
@@ -301,6 +304,19 @@ fun SettingsScreen(onClose: () -> Unit) {
                 prominent = false,
                 modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
             )
+            if (ConsentManager.isPrivacyOptionsRequired) {
+                val activity = LocalContext.current as? Activity
+                FFButton(
+                    "PRIVACY SETTINGS",
+                    onClick = {
+                        activity?.let { act ->
+                            ConsentManager.showPrivacyOptionsForm(act) { AdManager.startIfAllowed(act.applicationContext) }
+                        }
+                    },
+                    prominent = false,
+                    modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
+                )
+            }
             FFButton(
                 "DELETE FROM RANKING",
                 onClick = { confirmRankingDelete = true },

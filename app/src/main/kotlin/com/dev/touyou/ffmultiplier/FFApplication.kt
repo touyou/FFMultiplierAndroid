@@ -1,7 +1,6 @@
 package com.dev.touyou.ffmultiplier
 
 import android.app.Application
-import com.dev.touyou.ffmultiplier.ads.AdManager
 import com.dev.touyou.ffmultiplier.data.AppCheckSetup
 import com.dev.touyou.ffmultiplier.data.RankingService
 import com.dev.touyou.ffmultiplier.data.ScoreStore
@@ -18,7 +17,5 @@ class FFApplication : Application() {
         AppCheckSetup.install()
         scoreStore = ScoreStore(this)
         rankingService = RankingService(this, scoreStore)
-        AdManager.start(this)
-        AdManager.loadInterstitial(this)
     }
 }

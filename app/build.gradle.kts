@@ -106,6 +106,8 @@ dependencies {
     // debug ビルドはエミュレータでも通るようデバッグ用プロバイダを使う(src/debug の AppCheckSetup)
     debugImplementation(libs.firebase.appcheck.debug)
     implementation(libs.play.services.ads)
+    // EEA・英国などで広告の前に出す同意フォーム(GDPR メッセージ)。中身は AdMob の「プライバシーとメッセージ」で作る
+    implementation(libs.user.messaging.platform)
     // 旧版がランキングの key にしていた広告 ID を読む(旧レコードの後始末用)
     implementation(libs.play.services.ads.identifier)
     // Play Services が引き込む古い fragment を Play Console が「古いバージョン」と警告するので、新しい版に揃える。

@@ -3,6 +3,9 @@ package com.dev.touyou.ffmultiplier.ads
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.dev.touyou.ffmultiplier.R
 import com.dev.touyou.ffmultiplier.ScreenshotFixture
 import com.google.android.gms.ads.AdRequest
@@ -15,11 +18,19 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 object AdManager {
     private var interstitial: InterstitialAd? = null
 
-    fun start(context: Context) {
+    /** SDK を起動したか。バナーはこれが true になってから置く(先に load すると同意前にリクエストが飛ぶ)。 */
+    var isStarted by mutableStateOf(false)
+        private set
+
+    /** 同意が取れていれば SDK を起動し、インタースティシャルを事前ロードする。何度呼んでもよい。 */
+    fun startIfAllowed(context: Context) {
+        if (isStarted || !ConsentManager.canRequestAds) return
+        isStarted = true
         MobileAds.initialize(context) {}
+        loadInterstitial(context)
     }
 
-    fun loadInterstitial(context: Context) {
+    private fun loadInterstitial(context: Context) {
         val appContext = context.applicationContext
         InterstitialAd.load(
             appContext,

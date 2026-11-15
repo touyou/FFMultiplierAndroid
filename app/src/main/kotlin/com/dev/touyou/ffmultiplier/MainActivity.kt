@@ -13,6 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.dev.touyou.ffmultiplier.ads.AdManager
+import com.dev.touyou.ffmultiplier.ads.ConsentManager
 import com.dev.touyou.ffmultiplier.ui.FFTheme
 import com.dev.touyou.ffmultiplier.ui.GameScreen
 import com.dev.touyou.ffmultiplier.ui.HomeScreen
@@ -27,6 +29,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        // 同意フォームは Activity が要るので、広告の起動もここで同意のあとに行う
+        if (!ScreenshotFixture.active) {
+            ConsentManager.gatherConsent(this) { AdManager.startIfAllowed(applicationContext) }
+        }
         setContent {
             FFTheme { App(application as FFApplication) }
         }
