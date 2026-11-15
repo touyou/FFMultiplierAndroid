@@ -310,7 +310,7 @@ fun SettingsScreen(onClose: () -> Unit) {
                     "PRIVACY SETTINGS",
                     onClick = {
                         activity?.let { act ->
-                            ConsentManager.showPrivacyOptionsForm(act) { AdManager.startIfAllowed(act.applicationContext) }
+                            ConsentManager.showPrivacyOptionsForm(act) { AdManager.onConsentChanged(act.applicationContext) }
                         }
                     },
                     prominent = false,
