@@ -1,5 +1,6 @@
 package com.dev.touyou.ffmultiplier.ads
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -20,6 +21,11 @@ import com.google.android.gms.ads.AdView
 @Composable
 fun BannerAd(modifier: Modifier = Modifier) {
     if (ScreenshotFixture.active) return
+    // 同意が取れて SDK を起動するまでは枠だけ確保し、レイアウトがずれないようにする
+    if (!AdManager.isStarted) {
+        Spacer(modifier.fillMaxWidth().height(50.dp))
+        return
+    }
     val context = LocalContext.current
     val adUnitId = stringResource(R.string.banner_ad_unit_id)
     val adView = remember {

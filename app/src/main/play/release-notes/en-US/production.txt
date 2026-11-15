@@ -1,4 +1,3 @@
-Thanks for playing! This update is all about feeling at ease when you join the ranking.
-- Added "Delete from ranking" in Settings, so you can remove your name and scores anytime
-- Deleting all local scores now removes your ranking records too
-- Records from older versions no longer share anything that could identify your device with other players
+Thanks for playing! This update lets you choose how ads use your data, with peace of mind.
+- In regions that require it, such as Europe, the app now asks for your ad consent at launch
+- You can change your choice anytime from "PRIVACY SETTINGS" in Settings
