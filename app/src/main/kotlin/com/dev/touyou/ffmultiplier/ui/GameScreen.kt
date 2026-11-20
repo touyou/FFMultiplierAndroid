@@ -167,7 +167,7 @@ private fun ActionButton(title: String, icon: ImageVector, background: Color, on
         colors = ButtonDefaults.buttonColors(containerColor = background, contentColor = Color.White),
     ) {
         Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp))
-        Text(title, fontFamily = FFFont.futuraBold, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
+        Text(title, fontFamily = FFFont.jostBold, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
     }
 }
 
@@ -203,7 +203,7 @@ private fun ToastOverlay(vm: GameViewModel) {
         AnimatedVisibility(visible = toast != null, enter = fadeIn() + scaleIn(), exit = fadeOut()) {
             Text(
                 toast?.text.orEmpty(),
-                fontFamily = FFFont.futuraBold,
+                fontFamily = FFFont.jostBold,
                 fontSize = 20.sp,
                 color = FFColor.white,
                 modifier = Modifier
@@ -226,14 +226,14 @@ fun ResultCard(score: Int, isHighScore: Boolean, onExit: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        Text("Result", fontFamily = FFFont.futuraBold, fontSize = 22.sp, color = FFColor.blackReversible)
+        Text("Result", fontFamily = FFFont.jostBold, fontSize = 22.sp, color = FFColor.blackReversible)
         if (isHighScore) {
             Row(
                 Modifier.background(FFColor.red, CircleShape).padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(Icons.Filled.Star, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
-                Text("High Score", fontFamily = FFFont.futuraBold, fontSize = 15.sp, color = Color.White, modifier = Modifier.padding(start = 6.dp))
+                Text("High Score", fontFamily = FFFont.jostBold, fontSize = 15.sp, color = Color.White, modifier = Modifier.padding(start = 6.dp))
             }
         }
         Text(

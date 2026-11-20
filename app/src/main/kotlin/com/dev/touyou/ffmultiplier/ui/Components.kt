@@ -63,7 +63,7 @@ fun FFButton(
         },
         contentPadding = ButtonDefaults.ContentPadding,
     ) {
-        Text(text, fontFamily = FFFont.futuraBold, fontSize = 17.sp, modifier = Modifier.padding(vertical = 6.dp))
+        Text(text, fontFamily = FFFont.jostBold, fontSize = 17.sp, modifier = Modifier.padding(vertical = 6.dp))
     }
 }
 
@@ -76,7 +76,7 @@ fun <T> ScoreList(
 ) {
     if (rows.isEmpty()) {
         Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No Data", fontFamily = FFFont.futuraBold, fontSize = 20.sp, color = FFColor.white)
+            Text("No Data", fontFamily = FFFont.jostBold, fontSize = 20.sp, color = FFColor.white)
         }
         return
     }
@@ -84,7 +84,7 @@ fun <T> ScoreList(
         items(rows) { item ->
             Text(
                 line(item),
-                fontFamily = FFFont.futuraMedium,
+                fontFamily = FFFont.jostMedium,
                 fontSize = 16.sp,
                 color = FFColor.white,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
