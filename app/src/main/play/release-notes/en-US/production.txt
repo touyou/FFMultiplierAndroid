@@ -1,3 +1,3 @@
-Thanks for playing! This update lets you choose how ads use your data, with peace of mind.
-- In regions that require it, such as Europe, the app now asks for your ad consent at launch
-- You can change your choice anytime from "PRIVACY SETTINGS" in Settings
+Thanks for playing! This small update tidies up the lettering on screen.
+- Buttons and headings now use Jost, a typeface with a very similar feel
+- Settings now has an Open Source Licenses screen
