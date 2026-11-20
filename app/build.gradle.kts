@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     alias(libs.plugins.play.publisher)
+    // 依存ライブラリのライセンスをビルド時に集めて R.raw.aboutlibraries に書き出す(設定のライセンス画面が読む)
+    alias(libs.plugins.aboutlibraries)
 }
 
 // リリース署名の実体(keystore.properties + keystore 本体)はコミットしない。雛形は keystore.properties.example。
@@ -112,6 +114,7 @@ dependencies {
     implementation(libs.play.services.ads.identifier)
     // Play Services が引き込む古い fragment を Play Console が「古いバージョン」と警告するので、新しい版に揃える。
     implementation(libs.androidx.fragment)
+    implementation(libs.aboutlibraries.compose.m3)
     debugImplementation(libs.androidx.ui.tooling)
 
     testImplementation(libs.junit)
