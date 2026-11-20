@@ -399,7 +399,7 @@ private fun LicensesScreen(onClose: () -> Unit) {
     }
     var showFontLicenses by rememberSaveable { mutableStateOf(false) }
 
-    FFScaffold(title = "Licenses", background = FFColor.settingGray, onClose = onClose, titleColor = Color.Black) {
+    FFScaffold(title = "Open Source Licenses", background = FFColor.settingGray, onClose = onClose, titleColor = Color.Black) {
         LibrariesContainer(
             libraries = libraries,
             modifier = Modifier.weight(1f).fillMaxWidth(),
