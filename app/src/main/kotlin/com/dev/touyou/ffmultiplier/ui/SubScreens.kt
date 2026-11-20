@@ -286,7 +286,7 @@ fun SettingsScreen(onClose: () -> Unit) {
         },
     ) {
         Column(
-            Modifier.weight(1f).fillMaxWidth().padding(24.dp),
+            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(28.dp),
         ) {
