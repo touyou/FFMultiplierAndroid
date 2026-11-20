@@ -29,8 +29,8 @@ object FFColor {
 
 object FFFont {
     val dseg7 = FontFamily(Font(R.font.dseg7_classic_mini_bold))
-    val futuraBold = FontFamily(Font(R.font.futura_bold))
-    val futuraMedium = FontFamily(Font(R.font.futura_medium))
+    val jostBold = FontFamily(Font(R.font.jost_bold))
+    val jostMedium = FontFamily(Font(R.font.jost_medium))
 }
 
 @Composable

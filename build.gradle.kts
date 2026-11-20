@@ -5,4 +5,5 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.play.publisher) apply false
+    alias(libs.plugins.aboutlibraries) apply false
 }

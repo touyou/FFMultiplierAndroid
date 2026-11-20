@@ -44,6 +44,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.dev.touyou.ffmultiplier.R
+import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
+import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.dev.touyou.ffmultiplier.FFApplication
 import com.dev.touyou.ffmultiplier.ads.AdManager
 import com.dev.touyou.ffmultiplier.ads.BannerAd
@@ -75,7 +82,7 @@ private fun FFScaffold(
         containerColor = background,
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(title, fontFamily = FFFont.futuraBold, fontSize = 17.sp) },
+                title = { Text(title, fontFamily = FFFont.jostBold, fontSize = 17.sp) },
                 navigationIcon = {
                     IconButton(onClick = onClose) { Icon(Icons.Filled.Close, contentDescription = "Close") }
                 },
@@ -216,7 +223,7 @@ fun OnlineRankingScreen(onClose: () -> Unit) {
         }
         Text(
             "Your Rank: ${ranking.myRank}",
-            fontFamily = FFFont.futuraMedium,
+            fontFamily = FFFont.jostMedium,
             fontSize = 14.sp,
             color = Color(0xFF555555),
             textAlign = TextAlign.Center,
@@ -260,6 +267,8 @@ fun SettingsScreen(onClose: () -> Unit) {
     var showTutorial by rememberSaveable { mutableStateOf(false) }
     var confirmRankingDelete by rememberSaveable { mutableStateOf(false) }
     var rankingDeleteFailed by rememberSaveable { mutableStateOf(false) }
+    // 画面遷移にすると入力途中のユーザー名が消えるので、設定の上に全画面ダイアログで重ねる
+    var showLicenses by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(Unit) { name = app.scoreStore.playerName().orEmpty() }
 
     FFScaffold(
@@ -273,7 +282,7 @@ fun SettingsScreen(onClose: () -> Unit) {
                     app.scoreStore.setPlayerName(normalizedName(name))
                     onClose()
                 }
-            }) { Text("Save", fontFamily = FFFont.futuraBold, color = FFColor.green) }
+            }) { Text("Save", fontFamily = FFFont.jostBold, color = FFColor.green) }
         },
     ) {
         Column(
@@ -282,13 +291,13 @@ fun SettingsScreen(onClose: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(28.dp),
         ) {
             Column(Modifier.widthIn(max = 480.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("USER NAME", fontFamily = FFFont.futuraBold, fontSize = 14.sp, color = FFColor.darkGray)
+                Text("USER NAME", fontFamily = FFFont.jostBold, fontSize = 14.sp, color = FFColor.darkGray)
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     singleLine = true,
                     placeholder = { Text("user name") },
-                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FFFont.futuraMedium, fontSize = 22.sp),
+                    textStyle = androidx.compose.ui.text.TextStyle(fontFamily = FFFont.jostMedium, fontSize = 22.sp),
                     shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = FFColor.whiteBackground,
@@ -318,6 +327,12 @@ fun SettingsScreen(onClose: () -> Unit) {
                 )
             }
             FFButton(
+                "LICENSES",
+                onClick = { showLicenses = true },
+                prominent = false,
+                modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
+            )
+            FFButton(
                 "DELETE FROM RANKING",
                 onClick = { confirmRankingDelete = true },
                 tint = FFColor.red,
@@ -329,6 +344,13 @@ fun SettingsScreen(onClose: () -> Unit) {
     }
 
     if (showTutorial) TutorialDialog(onExit = { showTutorial = false })
+
+    if (showLicenses) {
+        Dialog(
+            onDismissRequest = { showLicenses = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+        ) { LicensesScreen(onClose = { showLicenses = false }) }
+    }
 
     if (confirmRankingDelete) {
         AlertDialog(
@@ -363,6 +385,45 @@ fun SettingsScreen(onClose: () -> Unit) {
             title = { Text("Couldn't delete from ranking") },
             text = { Text("Check your connection and try again.") },
             confirmButton = { TextButton(onClick = { rankingDeleteFailed = false }) { Text("OK") } },
+        )
+    }
+}
+
+@Composable
+private fun LicensesScreen(onClose: () -> Unit) {
+    val libraries by produceLibraries(R.raw.aboutlibraries)
+    val resources = LocalContext.current.resources
+    // 同梱フォントはライブラリの自動収集に入らないので、OFL の本文を別に載せる
+    val fontLicenses = remember(resources) {
+        resources.openRawResource(R.raw.font_licenses).bufferedReader().use { it.readText() }
+    }
+    var showFontLicenses by rememberSaveable { mutableStateOf(false) }
+
+    FFScaffold(title = "Licenses", background = FFColor.settingGray, onClose = onClose, titleColor = Color.Black) {
+        LibrariesContainer(
+            libraries = libraries,
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            header = {
+                item {
+                    TextButton(
+                        onClick = { showFontLicenses = true },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                    ) {
+                        Text("Fonts: Jost, DSEG7 Classic (SIL Open Font License 1.1)", color = FFColor.green)
+                    }
+                }
+            },
+        )
+    }
+
+    if (showFontLicenses) {
+        AlertDialog(
+            onDismissRequest = { showFontLicenses = false },
+            title = { Text("Fonts") },
+            text = {
+                Text(fontLicenses, fontSize = 12.sp, modifier = Modifier.verticalScroll(rememberScrollState()))
+            },
+            confirmButton = { TextButton(onClick = { showFontLicenses = false }) { Text("OK") } },
         )
     }
 }
