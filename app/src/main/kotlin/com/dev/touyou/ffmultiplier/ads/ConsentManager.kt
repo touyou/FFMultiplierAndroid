@@ -26,8 +26,11 @@ object ConsentManager {
     val canRequestAds: Boolean
         get() = ::info.isInitialized && info.canRequestAds()
 
-    /** 同意情報を更新し、必要ならフォームを出す。終わったら(失敗しても) [onDone] を呼ぶ。 */
-    fun gatherConsent(activity: Activity, onDone: () -> Unit) {
+    /**
+     * 同意情報を更新し、必要ならフォームを出す。終わったら(失敗しても) [onDone] を呼ぶ。
+     * [onDone] は前回の同意で先に呼ばれることがあるので、フォームが閉じたのを待つなら [onSettled] を使う。
+     */
+    fun gatherConsent(activity: Activity, onSettled: () -> Unit = {}, onDone: () -> Unit) {
         info = UserMessagingPlatform.getConsentInformation(activity)
         val params = ConsentRequestParameters.Builder().apply {
             // debug ビルドで intent extra `umpDebugEEA` を付けると EEA からのアクセスとして振る舞う
@@ -49,12 +52,14 @@ object ConsentManager {
                     error?.let { Log.w("ConsentManager", "consent form: ${it.message}") }
                     refresh()
                     onDone()
+                    onSettled()
                 }
             },
             { error ->
                 Log.w("ConsentManager", "consent info update: ${error.message}")
                 refresh()
                 onDone()
+                onSettled()
             },
         )
         // 前回の起動で同意済みなら、更新の完了を待たずに広告を始められる
