@@ -49,7 +49,7 @@ fun HingeSplit(
             with(density) {
                 val start = (if (sideBySide) hinge.bounds.left - o.left else hinge.bounds.top - o.top).toDp()
                 val gap = (if (sideBySide) hinge.bounds.width else hinge.bounds.height).toDp()
-                (start to gap).takeIf { start >= 160.dp && start + gap <= total - 160.dp }
+                (start to gap).takeIf { start >= MinPane && start + gap <= total - MinPane }
             }
         } else {
             null
@@ -78,3 +78,6 @@ fun HingeSplit(
         }
     }
 }
+
+// 問題のカード 2 枚と「×」の行(余白込みで約 240dp)が入る幅。これより狭くなる折り目では中央で分ける
+private val MinPane = 248.dp

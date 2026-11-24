@@ -141,31 +141,17 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, showActions: B
 
 @Composable
 private fun ActionRow(vm: GameViewModel, modifier: Modifier) {
-    // 折り目が端に寄って操作側のペインが狭いときは、DELETE / DONE を記号だけにして収める。
-    // 分割を許す最小幅(160dp)では 1 行に入らないので、スコアをボタンの上に出す
+    // 折り目が端に寄って操作側のペインが狭いときは、DELETE / DONE を記号だけにして収める
     BoxWithConstraints(modifier) {
         val compact = maxWidth < 320.dp
-        if (maxWidth < 200.dp) {
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                ScoreBadge(vm.score)
-                Row(
-                    Modifier.fillMaxWidth().padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                ) {
-                    ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact = true)
-                    ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact = true)
-                }
-            }
-        } else {
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact)
-                ScoreBadge(vm.score)
-                ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact)
-            }
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact)
+            ScoreBadge(vm.score)
+            ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact)
         }
     }
 }
