@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -68,20 +67,21 @@ fun GameScreen(onExit: () -> Unit, vm: GameViewModel = viewModel()) {
     }
 
     Box(Modifier.fillMaxSize().background(FFColor.blackBackground)) {
-        BoxWithConstraints(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
-            // 横長(折りたたみの半開きやタブレット横向き)では左右に、縦長では上下に分ける
-            if (maxWidth > maxHeight) {
-                Row(Modifier.fillMaxSize()) {
-                    DisplaySection(vm, exit, Modifier.weight(1f).fillMaxSize())
-                    Keypad(vm, Modifier.weight(1f).fillMaxSize())
+        // 半開きの折りたたみでは折り目に沿って、それ以外は横長なら左右・縦長なら上下に分ける。
+        // タブレットではマスが大きくなりすぎて指の移動が長くなるので、iOS の iPad と同じ上限で中央に寄せる
+        HingeSplit(
+            modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+            first = {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    DisplaySection(vm, exit, Modifier.widthIn(max = 600.dp).fillMaxSize())
                 }
-            } else {
-                Column(Modifier.fillMaxSize()) {
-                    DisplaySection(vm, exit, Modifier.weight(1f).fillMaxWidth())
-                    Keypad(vm, Modifier.weight(1f).fillMaxWidth())
+            },
+            second = {
+                Box(Modifier.fillMaxSize().background(FFColor.blackBackground), contentAlignment = Alignment.Center) {
+                    Keypad(vm, Modifier.widthIn(max = 600.dp).heightIn(max = 680.dp).fillMaxSize())
                 }
-            }
-        }
+            },
+        )
 
         ToastOverlay(vm)
 

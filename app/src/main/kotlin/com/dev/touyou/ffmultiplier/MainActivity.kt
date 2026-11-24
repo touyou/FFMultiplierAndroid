@@ -1,5 +1,6 @@
 package com.dev.touyou.ffmultiplier
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -26,6 +27,9 @@ import com.dev.touyou.ffmultiplier.ui.TutorialDialog
 private enum class Screen { Home, Game, LocalScore, OnlineRanking, Settings }
 
 class MainActivity : ComponentActivity() {
+    // AppFunctions の startTimeAttack から開かれたとき true。ゲームを始めたら false に戻す
+    private val startRequested = mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -33,14 +37,37 @@ class MainActivity : ComponentActivity() {
         if (!ScreenshotFixture.active) {
             ConsentManager.gatherConsent(this) { AdManager.startIfAllowed(applicationContext) }
         }
+        consumeStartRequest(intent)
         setContent {
-            FFTheme { App(application as FFApplication) }
+            FFTheme {
+                App(
+                    app = application as FFApplication,
+                    startRequested = startRequested.value,
+                    onStartConsumed = { startRequested.value = false },
+                )
+            }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        consumeStartRequest(intent)
+    }
+
+    // 作り直し(回転など)で同じ intent が再び渡されても始め直さないよう、受けたら action を消す
+    private fun consumeStartRequest(intent: Intent) {
+        if (intent.action != ACTION_START_TIME_ATTACK) return
+        intent.action = null
+        startRequested.value = true
+    }
+
+    companion object {
+        const val ACTION_START_TIME_ATTACK = "com.dev.touyou.ffmultiplier.action.START_TIME_ATTACK"
     }
 }
 
 @Composable
-private fun App(app: FFApplication) {
+private fun App(app: FFApplication, startRequested: Boolean, onStartConsumed: () -> Unit) {
     var screen by rememberSaveable { mutableStateOf(Screen.Home) }
     var showTutorial by rememberSaveable { mutableStateOf(false) }
     // ViewModel は Activity に紐づくため、1 回ごとに別の key で新しいゲームを作る
@@ -49,6 +76,14 @@ private fun App(app: FFApplication) {
     LaunchedEffect(Unit) {
         if (app.scoreStore.consumeFirstLaunch()) showTutorial = true
         app.rankingService.migrateIfNeeded()
+    }
+
+    LaunchedEffect(startRequested) {
+        if (startRequested) {
+            gameCount++
+            screen = Screen.Game
+            onStartConsumed()
+        }
     }
 
     val goHome = { screen = Screen.Home }
