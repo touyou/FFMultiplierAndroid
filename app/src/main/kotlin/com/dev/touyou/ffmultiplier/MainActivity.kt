@@ -8,14 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dev.touyou.ffmultiplier.ads.AdManager
 import com.dev.touyou.ffmultiplier.ads.ConsentManager
+import com.dev.touyou.ffmultiplier.game.GameViewModel
 import com.dev.touyou.ffmultiplier.ui.FFTheme
 import com.dev.touyou.ffmultiplier.ui.GameScreen
 import com.dev.touyou.ffmultiplier.ui.HomeScreen
@@ -74,6 +77,8 @@ private fun App(app: FFApplication, startRequested: Boolean, onStartConsumed: ()
     var showTutorial by rememberSaveable { mutableStateOf(false) }
     // ViewModel は Activity に紐づくため、1 回ごとに別の key で新しいゲームを作る
     var gameCount by rememberSaveable { mutableIntStateOf(0) }
+    // 起動要求が来たとき、今のゲームが結果表示まで進んでいるかを見るために持つ
+    var currentGame by remember { mutableStateOf<GameViewModel?>(null) }
 
     LaunchedEffect(Unit) {
         if (app.scoreStore.consumeFirstLaunch()) showTutorial = true
@@ -82,8 +87,9 @@ private fun App(app: FFApplication, startRequested: Boolean, onStartConsumed: ()
 
     LaunchedEffect(startRequested) {
         if (startRequested) {
-            // ゲーム中に届いたら今のゲームを続ける(key を変えると前のゲームのタイマーが裏で残り、スコアを保存してしまう)
-            if (screen != Screen.Game) gameCount++
+            // 遊んでいる途中なら今のゲームを続ける(key を変えると前のゲームのタイマーが裏で残り、スコアを保存してしまう)。
+            // 結果表示中ならタイマーは止まっているので、新しいゲームを始める
+            if (screen != Screen.Game || currentGame?.result != null) gameCount++
             screen = Screen.Game
             onStartConsumed()
         }
@@ -102,7 +108,11 @@ private fun App(app: FFApplication, startRequested: Boolean, onStartConsumed: ()
             onOnlineRanking = { screen = Screen.OnlineRanking },
             onSettings = { screen = Screen.Settings },
         )
-        Screen.Game -> GameScreen(onExit = goHome, vm = viewModel(key = "game$gameCount"))
+        Screen.Game -> {
+            val vm: GameViewModel = viewModel(key = "game$gameCount")
+            SideEffect { currentGame = vm }
+            GameScreen(onExit = goHome, vm = vm)
+        }
         Screen.LocalScore -> LocalScoreScreen(onClose = goHome)
         Screen.OnlineRanking -> OnlineRankingScreen(onClose = goHome)
         Screen.Settings -> SettingsScreen(onClose = goHome)
