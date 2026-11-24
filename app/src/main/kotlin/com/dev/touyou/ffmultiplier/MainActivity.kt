@@ -82,7 +82,8 @@ private fun App(app: FFApplication, startRequested: Boolean, onStartConsumed: ()
 
     LaunchedEffect(startRequested) {
         if (startRequested) {
-            gameCount++
+            // ゲーム中に届いたら今のゲームを続ける(key を変えると前のゲームのタイマーが裏で残り、スコアを保存してしまう)
+            if (screen != Screen.Game) gameCount++
             screen = Screen.Game
             onStartConsumed()
         }

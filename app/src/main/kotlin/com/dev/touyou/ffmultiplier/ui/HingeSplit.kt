@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,8 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
 /**
@@ -53,10 +56,18 @@ fun HingeSplit(
         }
         val (firstSize, gap) = split ?: ((total / 2) to 0.dp)
         if (sideBySide) {
-            Row {
-                Box(Modifier.width(firstSize).fillMaxHeight()) { first(sideBySide) }
-                Spacer(Modifier.width(gap))
-                Box(Modifier.weight(1f).fillMaxHeight()) { second(sideBySide) }
+            // 折り目の位置は左からの距離なので、RTL でも並びは物理的な左から。中身の向きは元に戻す
+            val direction = LocalLayoutDirection.current
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Row {
+                    Box(Modifier.width(firstSize).fillMaxHeight()) {
+                        CompositionLocalProvider(LocalLayoutDirection provides direction) { first(sideBySide) }
+                    }
+                    Spacer(Modifier.width(gap))
+                    Box(Modifier.weight(1f).fillMaxHeight()) {
+                        CompositionLocalProvider(LocalLayoutDirection provides direction) { second(sideBySide) }
+                    }
+                }
             }
         } else {
             Column {

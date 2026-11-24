@@ -10,6 +10,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -139,23 +141,32 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, showActions: B
 
 @Composable
 private fun ActionRow(vm: GameViewModel, modifier: Modifier) {
-    Row(
-        modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete)
-        Text(
-            vm.score.toString(),
-            fontFamily = FFFont.dseg7,
-            fontSize = 20.sp,
-            color = FFColor.white,
-            modifier = Modifier
-                .background(FFColor.lightGrayBackground, RoundedCornerShape(8.dp))
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-        ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done)
+    // 折り目が端に寄って操作側のペインが狭いときは、DELETE / DONE を記号だけにして収める
+    BoxWithConstraints(modifier) {
+        val compact = maxWidth < 320.dp
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact)
+            ScoreBadge(vm.score)
+            ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact)
+        }
     }
+}
+
+@Composable
+private fun ScoreBadge(score: Int) {
+    Text(
+        score.toString(),
+        fontFamily = FFFont.dseg7,
+        fontSize = 20.sp,
+        color = FFColor.white,
+        modifier = Modifier
+            .background(FFColor.lightGrayBackground, RoundedCornerShape(8.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    )
 }
 
 @Composable
@@ -172,14 +183,23 @@ private fun Operand(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ActionButton(title: String, icon: ImageVector, background: Color, onClick: () -> Unit) {
+private fun ActionButton(
+    title: String,
+    icon: ImageVector,
+    background: Color,
+    onClick: () -> Unit,
+    compact: Boolean = false,
+) {
     Button(
         onClick = onClick,
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(containerColor = background, contentColor = Color.White),
+        contentPadding = if (compact) PaddingValues(horizontal = 12.dp) else ButtonDefaults.ContentPadding,
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp))
-        Text(title, fontFamily = FFFont.jostBold, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
+        Icon(icon, contentDescription = if (compact) title else null, modifier = Modifier.size(18.dp))
+        if (!compact) {
+            Text(title, fontFamily = FFFont.jostBold, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
+        }
     }
 }
 
