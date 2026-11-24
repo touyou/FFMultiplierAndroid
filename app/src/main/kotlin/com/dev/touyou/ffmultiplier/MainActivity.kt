@@ -32,13 +32,19 @@ private enum class Screen { Home, Game, LocalScore, OnlineRanking, Settings }
 class MainActivity : ComponentActivity() {
     // AppFunctions の startTimeAttack から開かれたとき true。ゲームを始めたら false に戻す
     private val startRequested = mutableStateOf(false)
+    // 同意フォームが閉じるまで true にしない。フォームの裏でゲームの時間が進まないようにする
+    private val consentSettled = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         // 同意フォームは Activity が要るので、広告の起動もここで同意のあとに行う
-        if (!ScreenshotFixture.active) {
-            ConsentManager.gatherConsent(this) { AdManager.startIfAllowed(applicationContext) }
+        if (ScreenshotFixture.active) {
+            consentSettled.value = true
+        } else {
+            ConsentManager.gatherConsent(this, onSettled = { consentSettled.value = true }) {
+                AdManager.startIfAllowed(applicationContext)
+            }
         }
         // 作り直しやプロセス終了後の復帰では、システムが元の intent をもう一度渡してくるので読まない
         if (savedInstanceState == null) consumeStartRequest(intent)
@@ -46,7 +52,7 @@ class MainActivity : ComponentActivity() {
             FFTheme {
                 App(
                     app = application as FFApplication,
-                    startRequested = startRequested.value,
+                    startRequested = startRequested.value && consentSettled.value,
                     onStartConsumed = { startRequested.value = false },
                 )
             }
