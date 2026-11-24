@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -71,14 +72,20 @@ fun GameScreen(onExit: () -> Unit, vm: GameViewModel = viewModel()) {
         // タブレットではマスが大きくなりすぎて指の移動が長くなるので、iOS の iPad と同じ上限で中央に寄せる
         HingeSplit(
             modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
-            first = {
+            first = { sideBySide ->
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    DisplaySection(vm, exit, Modifier.widthIn(max = 600.dp).fillMaxSize())
+                    DisplaySection(vm, exit, showActions = !sideBySide, Modifier.widthIn(max = 600.dp).fillMaxSize())
                 }
             },
-            second = {
-                Box(Modifier.fillMaxSize().background(FFColor.blackBackground), contentAlignment = Alignment.Center) {
-                    Keypad(vm, Modifier.widthIn(max = 600.dp).heightIn(max = 680.dp).fillMaxSize())
+            // 左右に分けたときは DELETE / DONE をキーパッドの上に移し、入力から確定までの指の移動を短くする
+            second = { sideBySide ->
+                Column(
+                    Modifier.fillMaxSize().background(FFColor.blackBackground),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    if (sideBySide) ActionRow(vm, Modifier.widthIn(max = 600.dp).fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp))
+                    Keypad(vm, Modifier.widthIn(max = 600.dp).heightIn(max = 680.dp).fillMaxWidth().weight(1f, fill = false).fillMaxHeight())
                 }
             },
         )
@@ -100,7 +107,7 @@ fun GameScreen(onExit: () -> Unit, vm: GameViewModel = viewModel()) {
 }
 
 @Composable
-private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, modifier: Modifier) {
+private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, showActions: Boolean, modifier: Modifier) {
     Column(modifier.padding(horizontal = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(Modifier.fillMaxWidth().padding(top = 8.dp), contentAlignment = Alignment.Center) {
             Text(vm.remaining.toString(), fontFamily = FFFont.dseg7, fontSize = 17.sp, color = FFColor.green)
@@ -126,23 +133,28 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, modifier: Modi
             modifier = Modifier.padding(top = 16.dp),
         )
         Spacer(Modifier.weight(1f))
-        Row(
-            Modifier.fillMaxWidth().padding(bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete)
-            Text(
-                vm.score.toString(),
-                fontFamily = FFFont.dseg7,
-                fontSize = 20.sp,
-                color = FFColor.white,
-                modifier = Modifier
-                    .background(FFColor.lightGrayBackground, RoundedCornerShape(8.dp))
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-            ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done)
-        }
+        if (showActions) ActionRow(vm, Modifier.fillMaxWidth().padding(bottom = 12.dp))
+    }
+}
+
+@Composable
+private fun ActionRow(vm: GameViewModel, modifier: Modifier) {
+    Row(
+        modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete)
+        Text(
+            vm.score.toString(),
+            fontFamily = FFFont.dseg7,
+            fontSize = 20.sp,
+            color = FFColor.white,
+            modifier = Modifier
+                .background(FFColor.lightGrayBackground, RoundedCornerShape(8.dp))
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+        ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done)
     }
 }
 

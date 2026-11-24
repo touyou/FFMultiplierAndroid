@@ -26,11 +26,12 @@ import androidx.compose.ui.unit.dp
 /**
  * 表示部と操作部を 2 つに分けて置く。半開きの折り目があれば折り目に沿って分け(iOS の
  * ArrangementView と同じ考え)、無ければ横長は左右・縦長は上下に半分ずつ。
+ * 中身にはどちらで分けたかを渡す(左右のときに操作を寄せ直すため)。
  */
 @Composable
 fun HingeSplit(
-    first: @Composable () -> Unit,
-    second: @Composable () -> Unit,
+    first: @Composable (sideBySide: Boolean) -> Unit,
+    second: @Composable (sideBySide: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val hinge = currentWindowAdaptiveInfo().windowPosture.hingeList.firstOrNull { it.isSeparating }
@@ -53,15 +54,15 @@ fun HingeSplit(
         val (firstSize, gap) = split ?: ((total / 2) to 0.dp)
         if (sideBySide) {
             Row {
-                Box(Modifier.width(firstSize).fillMaxHeight()) { first() }
+                Box(Modifier.width(firstSize).fillMaxHeight()) { first(sideBySide) }
                 Spacer(Modifier.width(gap))
-                Box(Modifier.weight(1f).fillMaxHeight()) { second() }
+                Box(Modifier.weight(1f).fillMaxHeight()) { second(sideBySide) }
             }
         } else {
             Column {
-                Box(Modifier.height(firstSize).fillMaxWidth()) { first() }
+                Box(Modifier.height(firstSize).fillMaxWidth()) { first(sideBySide) }
                 Spacer(Modifier.height(gap))
-                Box(Modifier.weight(1f).fillMaxWidth()) { second() }
+                Box(Modifier.weight(1f).fillMaxWidth()) { second(sideBySide) }
             }
         }
     }
