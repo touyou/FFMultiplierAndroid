@@ -41,8 +41,7 @@ fun HingeSplit(
     var origin by remember { mutableStateOf<Rect?>(null) }
     val density = LocalDensity.current
     BoxWithConstraints(modifier.fillMaxSize().onGloballyPositioned { origin = it.boundsInWindow() }) {
-        // 片側が MinPane に届かない幅では、縦の折り目があっても上下に積む(左右だと問題のカードが切れる)
-        val sideBySide = (hinge?.isVertical ?: (maxWidth > maxHeight)) && maxWidth >= MinPane * 2
+        val sideBySide = hinge?.isVertical ?: (maxWidth > maxHeight)
         val total = if (sideBySide) maxWidth else maxHeight
         // 折り目は window 座標で来るので、この領域の位置を引いてから使う。端に寄りすぎていれば使わない
         val split = if (hinge != null && origin != null) {
@@ -80,5 +79,5 @@ fun HingeSplit(
     }
 }
 
-// 問題のカード 2 枚と「×」の行(余白込みで約 240dp)が入る幅。これより狭くなる折り目は分割に使わない
-private val MinPane = 248.dp
+// 狭いペインでは GameScreen 側で問題の行を縮め、操作の行を 2 段にして収める。それでも無理な端の折り目は使わない
+private val MinPane = 160.dp

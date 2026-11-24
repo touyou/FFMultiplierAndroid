@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -42,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -122,10 +124,18 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, showActions: B
             }
         }
         Spacer(Modifier.weight(1f))
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Operand(vm.leftText, Modifier.testTag("operandLeft"))
-            Text("×", fontSize = 41.sp, color = FFColor.white)
-            Operand(vm.rightText, Modifier.testTag("operandRight"))
+        // 狭いペインではカードの最小幅のまま並べて全体を縮める(はみ出すとキーパッドの下に潜る)
+        BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            val scale = (maxWidth / OperandRowWidth).coerceAtMost(1f)
+            Row(
+                Modifier.requiredWidth(OperandRowWidth).scale(scale),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+            ) {
+                Operand(vm.leftText, Modifier.testTag("operandLeft"))
+                Text("×", fontSize = 41.sp, color = FFColor.white)
+                Operand(vm.rightText, Modifier.testTag("operandRight"))
+            }
         }
         Text(
             vm.inputText,
@@ -141,17 +151,30 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, showActions: B
 
 @Composable
 private fun ActionRow(vm: GameViewModel, modifier: Modifier) {
-    // 折り目が端に寄って操作側のペインが狭いときは、DELETE / DONE を記号だけにして収める
+    // 操作側のペインが狭いときは DELETE / DONE を記号だけにし、さらに狭ければスコアをボタンの上に出す
     BoxWithConstraints(modifier) {
         val compact = maxWidth < 320.dp
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact)
-            ScoreBadge(vm.score)
-            ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact)
+        if (maxWidth < 200.dp) {
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                ScoreBadge(vm.score)
+                Row(
+                    Modifier.fillMaxWidth().padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact = true)
+                    ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact = true)
+                }
+            }
+        } else {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact)
+                ScoreBadge(vm.score)
+                ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact)
+            }
         }
     }
 }
@@ -291,3 +314,6 @@ fun ResultCard(score: Int, isHighScore: Boolean, onExit: () -> Unit) {
         }
     }
 }
+
+// カード 2 枚(最小 80dp)と「×」、その間隔を足した問題の行の幅
+private val OperandRowWidth = 220.dp
