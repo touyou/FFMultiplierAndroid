@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -228,16 +229,29 @@ private fun ActionButton(
 
 @Composable
 private fun Keypad(vm: GameViewModel, modifier: Modifier) {
-    Column(modifier.background(FFColor.blackBackground)) {
-        repeat(4) { row ->
-            Row(Modifier.weight(1f).fillMaxWidth()) {
-                repeat(4) { col ->
-                    val value = row * 4 + col
-                    Box(
-                        Modifier.weight(1f).fillMaxSize().clickable { vm.tapNumber(value) },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(hexDigit(value), fontFamily = FFFont.dseg7, fontSize = 36.sp, color = FFColor.gray)
+    BoxWithConstraints(modifier.background(FFColor.blackBackground)) {
+        // 折りたたみの半開きなどで縦が短いと、キーの行が 36sp の数字より低くなって上下の数字が重なる。
+        // キー 1 つの大きさに収まるよう、字の大きさを 36sp を上限に縮める
+        val digitSize = with(LocalDensity.current) {
+            minOf(36.sp.toDp(), maxHeight / 4 * 0.6f, maxWidth / 4 * 0.6f).toSp()
+        }
+        Column(Modifier.fillMaxSize()) {
+            repeat(4) { row ->
+                Row(Modifier.weight(1f).fillMaxWidth()) {
+                    repeat(4) { col ->
+                        val value = row * 4 + col
+                        Box(
+                            Modifier.weight(1f).fillMaxSize().clickable { vm.tapNumber(value) },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                hexDigit(value),
+                                fontFamily = FFFont.dseg7,
+                                fontSize = digitSize,
+                                color = FFColor.gray,
+                                maxLines = 1,
+                            )
+                        }
                     }
                 }
             }
