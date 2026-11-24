@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
         if (!ScreenshotFixture.active) {
             ConsentManager.gatherConsent(this) { AdManager.startIfAllowed(applicationContext) }
         }
-        consumeStartRequest(intent)
+        // 作り直しやプロセス終了後の復帰では、システムが元の intent をもう一度渡してくるので読まない
+        if (savedInstanceState == null) consumeStartRequest(intent)
         setContent {
             FFTheme {
                 App(
@@ -51,10 +52,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent)
         consumeStartRequest(intent)
     }
 
-    // 作り直し(回転など)で同じ intent が再び渡されても始め直さないよう、受けたら action を消す
+    // 同じ Activity の中で intent を読み直したときに始め直さないよう、受けたら action を消す
     private fun consumeStartRequest(intent: Intent) {
         if (intent.action != ACTION_START_TIME_ATTACK) return
         intent.action = null
