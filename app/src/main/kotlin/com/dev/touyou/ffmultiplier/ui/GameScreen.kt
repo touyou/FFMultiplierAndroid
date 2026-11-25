@@ -11,14 +11,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
@@ -40,9 +43,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,20 +73,27 @@ fun GameScreen(onExit: () -> Unit, vm: GameViewModel = viewModel()) {
     }
 
     Box(Modifier.fillMaxSize().background(FFColor.blackBackground)) {
-        BoxWithConstraints(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
-            // 横長(折りたたみの半開きやタブレット横向き)では左右に、縦長では上下に分ける
-            if (maxWidth > maxHeight) {
-                Row(Modifier.fillMaxSize()) {
-                    DisplaySection(vm, exit, Modifier.weight(1f).fillMaxSize())
-                    Keypad(vm, Modifier.weight(1f).fillMaxSize())
+        // 半開きの折りたたみでは折り目に沿って、それ以外は横長なら左右・縦長なら上下に分ける。
+        // タブレットではマスが大きくなりすぎて指の移動が長くなるので、iOS の iPad と同じ上限で中央に寄せる
+        HingeSplit(
+            modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+            first = { sideBySide ->
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    DisplaySection(vm, exit, showActions = !sideBySide, Modifier.widthIn(max = 600.dp).fillMaxSize())
                 }
-            } else {
-                Column(Modifier.fillMaxSize()) {
-                    DisplaySection(vm, exit, Modifier.weight(1f).fillMaxWidth())
-                    Keypad(vm, Modifier.weight(1f).fillMaxWidth())
+            },
+            // 左右に分けたときは DELETE / DONE をキーパッドの上に移し、入力から確定までの指の移動を短くする
+            second = { sideBySide ->
+                Column(
+                    Modifier.fillMaxSize().background(FFColor.blackBackground),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    if (sideBySide) ActionRow(vm, Modifier.widthIn(max = 600.dp).fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp))
+                    Keypad(vm, Modifier.widthIn(max = 600.dp).heightIn(max = 680.dp).fillMaxWidth().weight(1f, fill = false).fillMaxHeight())
                 }
-            }
-        }
+            },
+        )
 
         ToastOverlay(vm)
 
@@ -100,7 +112,7 @@ fun GameScreen(onExit: () -> Unit, vm: GameViewModel = viewModel()) {
 }
 
 @Composable
-private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, modifier: Modifier) {
+private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, showActions: Boolean, modifier: Modifier) {
     Column(modifier.padding(horizontal = 16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Box(Modifier.fillMaxWidth().padding(top = 8.dp), contentAlignment = Alignment.Center) {
             Text(vm.remaining.toString(), fontFamily = FFFont.dseg7, fontSize = 17.sp, color = FFColor.green)
@@ -113,10 +125,18 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, modifier: Modi
             }
         }
         Spacer(Modifier.weight(1f))
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Operand(vm.leftText, Modifier.testTag("operandLeft"))
-            Text("×", fontSize = 41.sp, color = FFColor.white)
-            Operand(vm.rightText, Modifier.testTag("operandRight"))
+        // 狭いペインではカードの最小幅のまま並べて全体を縮める(はみ出すとキーパッドの下に潜る)
+        BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            val scale = (maxWidth / OperandRowWidth).coerceAtMost(1f)
+            Row(
+                Modifier.requiredWidth(OperandRowWidth).scale(scale),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+            ) {
+                Operand(vm.leftText, Modifier.testTag("operandLeft"))
+                Text("×", fontSize = 41.sp, color = FFColor.white)
+                Operand(vm.rightText, Modifier.testTag("operandRight"))
+            }
         }
         Text(
             vm.inputText,
@@ -126,24 +146,51 @@ private fun DisplaySection(vm: GameViewModel, onExit: () -> Unit, modifier: Modi
             modifier = Modifier.padding(top = 16.dp),
         )
         Spacer(Modifier.weight(1f))
-        Row(
-            Modifier.fillMaxWidth().padding(bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete)
-            Text(
-                vm.score.toString(),
-                fontFamily = FFFont.dseg7,
-                fontSize = 20.sp,
-                color = FFColor.white,
-                modifier = Modifier
-                    .background(FFColor.lightGrayBackground, RoundedCornerShape(8.dp))
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-            ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done)
+        if (showActions) ActionRow(vm, Modifier.fillMaxWidth().padding(bottom = 12.dp))
+    }
+}
+
+@Composable
+private fun ActionRow(vm: GameViewModel, modifier: Modifier) {
+    // 操作側のペインが狭いときは DELETE / DONE を記号だけにし、さらに狭ければスコアをボタンの上に出す
+    BoxWithConstraints(modifier) {
+        val compact = maxWidth < 320.dp
+        if (maxWidth < 200.dp) {
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                ScoreBadge(vm.score)
+                Row(
+                    Modifier.fillMaxWidth().padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact = true)
+                    ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact = true)
+                }
+            }
+        } else {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ActionButton("DELETE", Icons.Filled.Close, FFColor.red, vm::delete, compact)
+                ScoreBadge(vm.score)
+                ActionButton("DONE", Icons.Filled.Check, FFColor.green, vm::done, compact)
+            }
         }
     }
+}
+
+@Composable
+private fun ScoreBadge(score: Int) {
+    Text(
+        score.toString(),
+        fontFamily = FFFont.dseg7,
+        fontSize = 20.sp,
+        color = FFColor.white,
+        modifier = Modifier
+            .background(FFColor.lightGrayBackground, RoundedCornerShape(8.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    )
 }
 
 @Composable
@@ -160,29 +207,51 @@ private fun Operand(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ActionButton(title: String, icon: ImageVector, background: Color, onClick: () -> Unit) {
+private fun ActionButton(
+    title: String,
+    icon: ImageVector,
+    background: Color,
+    onClick: () -> Unit,
+    compact: Boolean = false,
+) {
     Button(
         onClick = onClick,
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(containerColor = background, contentColor = Color.White),
+        contentPadding = if (compact) PaddingValues(horizontal = 12.dp) else ButtonDefaults.ContentPadding,
     ) {
-        Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp))
-        Text(title, fontFamily = FFFont.jostBold, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
+        Icon(icon, contentDescription = if (compact) title else null, modifier = Modifier.size(18.dp))
+        if (!compact) {
+            Text(title, fontFamily = FFFont.jostBold, fontSize = 16.sp, modifier = Modifier.padding(start = 6.dp))
+        }
     }
 }
 
 @Composable
 private fun Keypad(vm: GameViewModel, modifier: Modifier) {
-    Column(modifier.background(FFColor.blackBackground)) {
-        repeat(4) { row ->
-            Row(Modifier.weight(1f).fillMaxWidth()) {
-                repeat(4) { col ->
-                    val value = row * 4 + col
-                    Box(
-                        Modifier.weight(1f).fillMaxSize().clickable { vm.tapNumber(value) },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(hexDigit(value), fontFamily = FFFont.dseg7, fontSize = 36.sp, color = FFColor.gray)
+    BoxWithConstraints(modifier.background(FFColor.blackBackground)) {
+        // 折りたたみの半開きなどで縦が短いと、キーの行が 36sp の数字より低くなって上下の数字が重なる。
+        // キー 1 つの大きさに収まるよう、字の大きさを 36sp を上限に縮める
+        val digitSize = with(LocalDensity.current) {
+            minOf(36.sp.toDp(), maxHeight / 4 * 0.6f, maxWidth / 4 * 0.6f).toSp()
+        }
+        Column(Modifier.fillMaxSize()) {
+            repeat(4) { row ->
+                Row(Modifier.weight(1f).fillMaxWidth()) {
+                    repeat(4) { col ->
+                        val value = row * 4 + col
+                        Box(
+                            Modifier.weight(1f).fillMaxSize().clickable { vm.tapNumber(value) },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                hexDigit(value),
+                                fontFamily = FFFont.dseg7,
+                                fontSize = digitSize,
+                                color = FFColor.gray,
+                                maxLines = 1,
+                            )
+                        }
                     }
                 }
             }
@@ -259,3 +328,6 @@ fun ResultCard(score: Int, isHighScore: Boolean, onExit: () -> Unit) {
         }
     }
 }
+
+// カード 2 枚(最小 80dp)と「×」、その間隔を足した問題の行の幅
+private val OperandRowWidth = 220.dp

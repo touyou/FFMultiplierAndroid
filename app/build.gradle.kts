@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    // AppFunctions の @AppFunctionServiceEntryPoint からサービス本体と関数一覧の XML を生成する
+    alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.play.publisher)
     // 依存ライブラリのライセンスをビルド時に集めて R.raw.aboutlibraries に書き出す(設定のライセンス画面が読む)
@@ -97,6 +99,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.adaptive)
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
@@ -115,6 +118,8 @@ dependencies {
     // Play Services が引き込む古い fragment を Play Console が「古いバージョン」と警告するので、新しい版に揃える。
     implementation(libs.androidx.fragment)
     implementation(libs.aboutlibraries.compose.m3)
+    implementation(libs.androidx.appfunctions)
+    ksp(libs.androidx.appfunctions.compiler)
     debugImplementation(libs.androidx.ui.tooling)
 
     testImplementation(libs.junit)

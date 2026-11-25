@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AppFunctionService は API 36 から。それより前の端末ではサービスごと無効にする -->
+    <bool name="app_functions_enabled">false</bool>
+</resources>
